@@ -16,8 +16,8 @@ markup.
 | Repository | [brandvm/reformdd](https://github.com/brandvm/reformdd) |
 | Webflow site | Reformd — `6aa30843ef516b660e7d8770` |
 | Home page | `6aa30847ef516b660e7d877b` |
-| Designer | [Open Reformd](https://reformd-babc5c.design.webflow.com) |
-| Staging website | [reformd-babc5c.webflow.io](https://reformd-babc5c.webflow.io) |
+| Designer | [Open Reformd](https://reformdd.design.webflow.com) |
+| Staging website | [reformdd.webflow.io](https://reformdd.webflow.io) |
 | Staging bundles | `https://brandvm.github.io/reformdd/` |
 | Development | `http://localhost:3000/` |
 | Initial release | `v0.1.0` |

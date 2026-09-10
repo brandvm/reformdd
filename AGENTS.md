@@ -6,7 +6,7 @@ site. Webflow owns markup, layout, components, and CMS content.
 - GitHub: `brandvm/reformdd`, default branch `master`.
 - Webflow site ID: `6aa30843ef516b660e7d8770`.
 - Home page ID: `6aa30847ef516b660e7d877b`.
-- Staging site: `https://reformd-babc5c.webflow.io`.
+- Staging site: `https://reformdd.webflow.io`.
 - Staging bundles: `https://brandvm.github.io/reformdd/`.
 
 Read `README.md` and `loader.html` before changing integration or releases.
