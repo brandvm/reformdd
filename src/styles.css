@@ -38,9 +38,9 @@
      design was built at. These starting widths come from the reference;
      tune them when the Reformd design is established. */
   --size-unit: 16;
-  --size-container-ideal: 1440;
+  --size-container-ideal: 1680;
   --size-container-min: 991px;
-  --size-container-max: 1440px;
+  --size-container-max: 1680px;
 
   --size-container: clamp(
     var(--size-container-min),
