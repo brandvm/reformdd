@@ -3,6 +3,8 @@ node_modules/
 
 # These repos are public — never let a key reach a commit.
 .env
+.env.*
+!.env.example
 
 # Build output. Rebuilt by CI on every push to master. A release commits it
 # with `git add -f dist` and then un-tracks it again with

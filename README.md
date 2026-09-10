@@ -1,4 +1,4 @@
-# Brand Vision — Webflow custom code template
+# Reformd — Webflow custom code
 
 TypeScript + esbuild toolchain for Webflow client sites — JS **and** CSS.
 Dev = localhost live reload · Staging = auto-deploy on push · Prod = pinned jsDelivr tag.
@@ -9,12 +9,29 @@ Source files: `src/index.ts` (bundled to `dist/index.js`) and `src/styles.css`
 The Webflow Designer owns layout and classes. Nothing in this repo generates
 markup.
 
+## Project
+
+| Resource | Value |
+| --- | --- |
+| Repository | [brandvm/reformdd](https://github.com/brandvm/reformdd) |
+| Webflow site | Reformd — `6aa30843ef516b660e7d8770` |
+| Home page | `6aa30847ef516b660e7d877b` |
+| Designer | [Open Reformd](https://reformd-babc5c.design.webflow.com) |
+| Staging website | [reformd-babc5c.webflow.io](https://reformd-babc5c.webflow.io) |
+| Staging bundles | `https://brandvm.github.io/reformdd/` |
+| Development | `http://localhost:3000/` |
+| Initial release | `v0.1.0` |
+
+The site starts with one Home page. Brand content, layout, and a custom
+domain will be configured as the project develops.
+
 ## Requirements
 
 - [Node](https://nodejs.org) 22 (the version CI builds with)
 - [pnpm](https://pnpm.io/installation) 11 — `corepack enable`
 
 ```bash
+nvm use
 pnpm install
 ```
 
@@ -26,17 +43,21 @@ pnpm build    # minified -> dist/
 pnpm check    # tsc --noEmit
 ```
 
-## New project checklist
+## Webflow integration
 
-1. Use this template → create repo `wf-<client>` (public)
-2. `package.json` → change `"name"`
-3. Repo Settings → Pages → Source: **GitHub Actions**
-4. Repo → Settings → Collaborators and teams → add the `developers` team (Write)
-5. Paste the three snippets from `loader.html` into Webflow, replacing `REPO`
-   with this repo's name in each — head code, an **Embed on the canvas**, and
-   footer code. Piece 2 must be an Embed inside a component that appears on
-   every page; site custom code does not render in the Designer.
-6. Publish to staging and confirm the canvas picks up `styles.css`
+The three snippets in [`loader.html`](loader.html) are configured for this
+repository: site head code, a canvas CSS/config Embed, and site footer code.
+The canvas Embed lives in the reusable **Global Custom Code** component.
+Include one instance on every new page, before the visible page content.
+Site custom code does not render in the Designer.
+
+GitHub Pages uses **GitHub Actions** as its source. Pushes to `master` run
+the type check and build, then deploy `dist/`. The staging workflow can also
+be run manually from the repository's Actions tab.
+
+`loader.html` is the checked-in source for the installed Webflow snippets.
+Changes to it must also be applied in Webflow and published; pushing the
+repository only updates the external JS and CSS bundles.
 
 ## Daily
 

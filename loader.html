@@ -1,7 +1,7 @@
 <!-- ============================================================
 Custom-code loading — three pieces, pasted into three different places
-in Webflow. Replace REPO (all occurrences) and bump VER in pieces 2
-and 3 at each release.
+in Webflow. Configured for brandvm/reformdd. Bump VER in pieces 2 and 3 at each
+release, after the tagged build exists on GitHub.
 
   prod        = pinned jsDelivr tag (immutable)
   webflow.io  = latest pushed staging bundle (JS + CSS)
@@ -90,7 +90,7 @@ that is not versioned, reviewable, or rollback-able.
 <link
   id="bv-css"
   rel="stylesheet"
-  href="https://brandvm.github.io/REPO/styles.css?v=1"
+  href="https://brandvm.github.io/reformdd/styles.css?v=1"
 />
 <link
   id="bv-css-dev"
@@ -99,10 +99,10 @@ that is not versioned, reviewable, or rollback-able.
 />
 <script>
   (function () {
-    var VER = "X.Y.Z";
+    var VER = "0.1.0";
     var PROD_CSS =
-      "https://cdn.jsdelivr.net/gh/brandvm/REPO@" + VER + "/dist/styles.css";
-    var STAG = "https://brandvm.github.io/REPO/";
+      "https://cdn.jsdelivr.net/gh/brandvm/reformdd@" + VER + "/dist/styles.css";
+    var STAG = "https://brandvm.github.io/reformdd/";
     var DEV = "http://localhost:3000/";
     var staging = /\.webflow\.io$/.test(location.hostname);
     var flag = false;
@@ -137,9 +137,9 @@ Rollback = revert the two VER strings and publish.
 ============================================================ -->
 <script>
   (function () {
-    var VER = "X.Y.Z";
+    var VER = "0.1.0";
     var PROD_JS =
-      "https://cdn.jsdelivr.net/gh/brandvm/REPO@" + VER + "/dist/index.js";
+      "https://cdn.jsdelivr.net/gh/brandvm/reformdd@" + VER + "/dist/index.js";
     function js(src, fallback) {
       var s = document.createElement("script");
       s.src = src;
