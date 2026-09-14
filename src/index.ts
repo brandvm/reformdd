@@ -22,20 +22,43 @@ import { initVideoLibrary } from './modules/video-library';
 // constructs, the real page height is what it sees.
 document.documentElement.classList.remove('is-loading');
 
+// Modules are independent, so one throwing must not take the rest of the page
+// with it. Without this the manifest is a chain: a bad selector in the nav
+// would stop initFooter() from ever running, and the footer's failure mode is
+// silent — CSS leaves the accordions open only while JS has NOT claimed them,
+// so a half-initialised page is worse than an uninitialised one.
+function run(name: string, init: () => void): void {
+  try {
+    init();
+  } catch (error) {
+    // Reported, not swallowed: this should be visible in the console of any
+    // page where a module is misbehaving, without breaking the others.
+    console.error(`[bv] ${name} failed to initialise`, error);
+  }
+}
+
 // Returns the Lenis instance — assign it here once a module needs to ride
 // the scroll callback or stop/start it (parallax, nav, modals), and pass it
 // in. It is undefined under prefers-reduced-motion, which is also the signal
 // for those modules to skip their motion.
-const lenis = initSmoothScroll();
+//
+// Not wrapped: the value is a dependency of initNav below, so there is no
+// meaningful way to continue past a failure here other than without it.
+let lenis: ReturnType<typeof initSmoothScroll>;
+try {
+  lenis = initSmoothScroll();
+} catch (error) {
+  console.error('[bv] smooth scroll failed to initialise', error);
+}
 
 // Takes Lenis so opening the menu can stop the scroll rather than fighting it
 // with overflow:hidden; falls back to the .nav-open class when Lenis is absent.
-initNav(lenis);
+run('nav', () => initNav(lenis));
 
 // Mobile-only link-column accordions. No Lenis dependency: the panels are in
 // normal flow, so nothing here touches the scroll.
-initFooter();
+run('footer', initFooter);
 
 // Internal tool: prints each background video's CDN URL on /design/video-library
 // so it can be copied for use elsewhere. No-ops on every other page.
-initVideoLibrary();
+run('video library', initVideoLibrary);

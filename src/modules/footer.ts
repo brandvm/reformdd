@@ -105,13 +105,31 @@ class Accordion {
       onReverseComplete: () => panel.setAttribute('aria-hidden', 'true'),
     });
 
-    t.fromTo(panel, { height: 0 }, { height: 'auto', duration: 0.4 }, 0)
-      .to(this.chevron, { rotate: 180, duration: 0.4 }, 0)
-      .from(
+    // Both ends of every tween are stated explicitly. `.from()` would read the
+    // items' CURRENT opacity as the value to animate back to, so if a previous
+    // timeline ever left them hidden — a kill() that outran its clearProps, a
+    // second rebuild in the same frame — the new tween would animate 0 -> 0 and
+    // the links would stay invisible for good, inside a panel that still opens
+    // to full height. That is the one failure this accordion cannot afford: the
+    // footer links become unreachable with no error anywhere.
+    //
+    // The panel carries its own overflow for the same reason. §05 sets it too,
+    // but only under [data-footer-ready]; if that sheet is late, stale or
+    // missing, the height tween must still clip rather than let a 'closed'
+    // panel lay its links out at full height.
+    t.fromTo(
+      panel,
+      { height: 0, overflow: 'hidden' },
+      { height: 'auto', duration: 0.4 },
+      0,
+    )
+      .fromTo(this.chevron, { rotate: 0 }, { rotate: 180, duration: 0.4 }, 0)
+      .fromTo(
         this.items,
+        { autoAlpha: 0, y: -8 },
         {
-          autoAlpha: 0,
-          y: -8,
+          autoAlpha: 1,
+          y: 0,
           duration: 0.4,
           ease: 'expo.out',
           stagger: 0.04,
