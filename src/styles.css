@@ -734,6 +734,43 @@ html.nav-open {
    §03 — that is where the rest of the Rich Text patching sits, and its
    versions also cover the wrapper div Webflow sometimes nests. */
 
+/* Background glow blobs. Webflow owns everything about how they look — the
+   Glow component stores its colours as Glow/* variable references and its
+   shape as a literal mask, both of which survive the API intact.
+   
+   Two things it cannot store, hence this block:
+   
+   1. -webkit-mask-image. Webflow rejects vendor-prefixed properties outright
+      ("Invalid style property"). Unprefixed mask-image covers Safari 15.4+;
+      this is the fallback for older WebKit, where without it the blob renders
+      as a hard-edged rectangle rather than degrading to a soft one.
+   2. The GPU hint. will-change on a permanently-animating element is the one
+      case where it is correct rather than a smell: src/modules/glow.ts drifts
+      these forever, and promoting them once up front is what keeps a blob the
+      size of the viewport from repainting the section behind it.
+      
+   Note the mask values are duplicated from the Webflow classes rather than
+   shared. A CSS custom property would have let them be written once, but
+   Webflow rejects those too, so the Designer has to remain the source of
+   truth for the unprefixed value and this only shadows it for old WebKit. */
+.glow {
+  -webkit-mask-image: radial-gradient(
+    ellipse at center,
+    #000 45%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  will-change: transform;
+}
+
+.glow-layer-a,
+.glow-layer-b {
+  -webkit-mask-image: radial-gradient(
+    closest-side,
+    #000 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
 /* Mobile CTA bar. Webflow owns the bar's look and the ≤767px reveal; what is
    left here is the three things its style panel cannot say.
 

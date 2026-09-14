@@ -7,6 +7,7 @@ import { initSmoothScroll } from './modules/smooth-scroll';
 import { initNav } from './modules/nav';
 import { initFooter } from './modules/footer';
 import { initVideoLibrary } from './modules/video-library';
+import { initGlow } from './modules/glow';
 
 // Release the pre-paint scroll lock set by the head bootstrap (loader.html).
 // Must stay FIRST and unconditional: anything above it that throws leaves the
@@ -58,6 +59,10 @@ run('nav', () => initNav(lenis));
 // Mobile-only link-column accordions. No Lenis dependency: the panels are in
 // normal flow, so nothing here touches the scroll.
 run('footer', initFooter);
+
+// Ambient drift on the background glow blobs. Transform-only, so it cannot
+// repaint the sections they sit behind.
+run('glow', initGlow);
 
 // Internal tool: prints each background video's CDN URL on /design/video-library
 // so it can be copied for use elsewhere. No-ops on every other page.
