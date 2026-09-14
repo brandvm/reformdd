@@ -734,6 +734,46 @@ html.nav-open {
    §03 — that is where the rest of the Rich Text patching sits, and its
    versions also cover the wrapper div Webflow sometimes nests. */
 
+/* Mobile CTA bar. Webflow owns the bar's look and the ≤767px reveal; what is
+   left here is the three things its style panel cannot say.
+
+   1. The home indicator. `padding-bottom` in the Designer is a single value,
+      so the safe-area inset has to be added to it here. Phones without an
+      inset resolve env() to 0px and keep the authored padding.
+   2. Clearance. The bar is fixed, so it sits over whatever the page ends
+      with — the footer's legal row, usually. Reserving its height as page
+      padding is what stops it covering content at the bottom of a scroll.
+      100% of the bar's own height is not knowable in CSS, hence the explicit
+      sum of the parts that make it.
+   3. Getting out of the way of the mega menu. The panel is full-screen; the
+      bar would otherwise float over it. :has() keeps this in CSS rather than
+      adding a second consumer of the nav's open state in JS. */
+@media (max-width: 767px) {
+  .cta-bar {
+    padding-bottom: calc(
+      var(--_layout---cta-bar--padding, 0.75em) + env(safe-area-inset-bottom)
+    );
+  }
+
+  /* Bar padding (x2) + button padding (x2) + one line of button text. Kept as
+     a variable so a change to the bar's scale only has to be made once. */
+  body {
+    --cta-bar-height: calc(
+      (var(--_layout---cta-bar--padding, 0.75em) * 2) +
+        (var(--_layout---cta-bar--button-padding-v, 1.125em) * 2) +
+        var(--_typography-role---size--button, 1em) +
+        env(safe-area-inset-bottom)
+    );
+    padding-bottom: var(--cta-bar-height);
+  }
+
+  /* data-nav-open lives on the nav root, not on <html>, so this reaches up
+     and back down rather than reading a document-level class. */
+  body:has([data-nav-open]) .cta-bar {
+    display: none;
+  }
+}
+
 /* ============================================================
    06. UTILITIES
    ============================================================ */
