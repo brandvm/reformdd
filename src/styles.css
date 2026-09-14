@@ -62,8 +62,12 @@
   --ease-bbs: cubic-bezier(0.64, 0.05, 0, 1);
   --dur-bbs: 800ms;
 
-  /* Set this to the fixed header height when the navigation is built. */
-  --nav-h: 0rem;
+  /* Clearance for the fixed header, used by the anchor offset in §06.
+     The condensed height, not the full one: any in-page anchor is reached
+     by scrolling, and by the time you arrive the bar has already shrunk.
+     Tracks the Designer variable so tuning Nav/Height Scrolled moves the
+     anchor landing with it. */
+  --nav-h: var(--_layout---nav--height-scrolled, 4.5em);
 
   /* Underline effect */
   --underline-top: 95%;
@@ -378,9 +382,136 @@ html.lenis {
   overflow: hidden;
 }
 
+/* src/modules/nav.ts sets this while the menu panel is open, and only when
+   there is no Lenis instance to own the lock — i.e. prefers-reduced-motion.
+   Whenever Lenis exists, .lenis-stopped above is the lock and this must stay
+   off; two locks are worse than one.
+
+   <html> only, never <body>: overflow:hidden on the body makes it establish
+   a block formatting context, and the browser re-clamps the document scroll
+   position when it does — which yanks the page the instant the menu opens
+   from anywhere but the very top. */
+html.nav-open {
+  overflow: hidden;
+}
+
 /* ============================================================
    05. COMPONENTS & MOTION
    ============================================================ */
+
+/* Navbar panel and its scrim — the closed state, so the menu is not briefly
+   visible, its links are not tabbable, and the overlay cannot swallow clicks
+   before the bundle boots. nav.ts clears the panel's inline visibility on
+   open and restores it on the timeline's reverse; the overlay rides GSAP's
+   autoAlpha, which writes visibility:inherit over this.
+   Attribute selectors, not the Designer classes, for the same reason nav.ts
+   hooks on them: renaming a class must not unhide either one. */
+[data-nav="panel"],
+[data-nav="overlay"] {
+  visibility: hidden;
+}
+
+/* Navbar condensed state. nav.ts puts data-nav-scrolled on the root once the
+   page is past the threshold, and data-nav-open while the menu is open. Open
+   wins: the panel's top padding is designed against the FULL bar height, so
+   opening the menu restores it rather than leaving the links floating below
+   a shrunken bar. It also keeps the scrolled background and rule off the bar
+   while the panel is behind it, where a border would draw a line across the
+   middle of an open menu.
+
+   Descendant selectors because a Webflow combo class can only style the
+   element it sits on, and this state has to reach the bar and the logo from
+   a flag on their shared ancestor — exactly the "JS-paired styles Webflow
+   classes cannot express" case in the cascade notes. Every value is still a
+   Designer variable, so the sizes stay tunable without touching this file. */
+[data-nav-part="bar"] {
+  background-color: transparent;
+  border-bottom: var(--_spacing---hairline) solid transparent;
+  transition:
+    height 320ms var(--ease-bbs),
+    background-color 320ms var(--ease-bbs),
+    border-bottom-color 320ms var(--ease-bbs);
+}
+
+/* Width, not transform, so the mark is re-rendered from the vector at every
+   size instead of being rasterised once and scaled — that is what makes an
+   inline SVG go soft on mobile. */
+[data-nav-part="logo"] {
+  transition: width 320ms var(--ease-bbs);
+}
+
+/* The button and burger shrink by transform: they are a text label and three
+   plain rectangles, so there is no vector detail to lose, and transform is
+   the cheap property to animate. Anchored to their own gutter edge so both
+   stay flush while they scale. No will-change: the compositor layer lasts
+   only as long as the transition, and the text re-rasterises crisply at rest. */
+[data-nav-part="toggle-icon"] {
+  transform-origin: left center;
+  transition: transform 320ms var(--ease-bbs);
+}
+
+[data-nav-part="actions"] {
+  transform-origin: right center;
+  transition: transform 320ms var(--ease-bbs);
+}
+
+/* SIZE — applies whenever scrolled, open or not.
+   The bar must not resize when the menu opens. It used to, and the growth
+   was visible through the panel wipe: the bar sits above the panel, so a
+   72→116px animation read as the header inflating behind the menu.
+   The -scrolled variables carry literal fallbacks because an undefined var()
+   is invalid-at-computed-value-time, which resolves `height` to auto and
+   collapses the bar rather than doing nothing — that would matter if this
+   bundle ever shipped ahead of the Webflow publish that defines them. Keep
+   the fallbacks in step with Nav/Height Scrolled and Nav/Logo Width Scrolled. */
+[data-nav-scrolled] [data-nav-part="bar"] {
+  height: var(--_layout---nav--height-scrolled, 4.5em);
+}
+
+[data-nav-scrolled] [data-nav-part="logo"] {
+  width: var(--_layout---nav--logo-width-scrolled, 10em);
+}
+
+[data-nav-scrolled] [data-nav-part="toggle-icon"],
+[data-nav-scrolled] [data-nav-part="actions"] {
+  transform: scale(0.875);
+}
+
+/* Hold the gap between the bottom of the bar and the first row of menu
+   content constant by tracking however much the bar shrank, rather than
+   hard-coding a second padding that would drift the moment either height is
+   tuned. Nav/Panel Padding T is measured from the top of the panel, which
+   sits behind the bar — so the visible gap is that padding minus the bar
+   height, and subtracting the shrink here is what keeps it steady. */
+[data-nav-scrolled] [data-nav="panel"] {
+  padding-top: calc(
+    var(--_layout---nav--panel-padding-t) -
+      (
+        var(--_layout---nav--height) -
+          var(--_layout---nav--height-scrolled, 4.5em)
+      )
+  );
+}
+
+/* CHROME — only while the menu is closed. A bottom rule on the bar would
+   otherwise draw a line straight across the middle of the open panel, and
+   the bar's own background would sit on top of the panel's. */
+[data-nav-scrolled]:not([data-nav-open]) [data-nav-part="bar"] {
+  background-color: var(--_colors-semantic---background--page);
+  border-bottom-color: var(--_colors-semantic---border--subtle);
+}
+
+/* Footer link-column accordions. Closed state is applied only once
+   src/modules/footer.ts has marked the footer as its own — without that
+   guard a bundle that failed to load would leave the footer links
+   permanently sealed shut on mobile, which is worse than showing them all.
+   The overflow clip is what the GSAP height tween animates against. */
+@media screen and (max-width: 767px) {
+  [data-footer-ready] [data-footer="panel"] {
+    height: 0;
+    overflow: hidden;
+  }
+}
 
 .link-underline {
   position: relative;
@@ -417,11 +548,11 @@ html.lenis {
    First color declaration is the fallback where color-mix is missing:
    a full-strength underline rather than none at all.
 
-   Links inside Content RTE get this without the class: the CMS generates
-   the <a> and there is nothing to put a class on. Listed here rather than
-   copied into the prose block below so the treatment has one definition. */
-.inline-link-underline,
-.content-rte a {
+   Prose links are deliberately NOT part of this rule — see the full-strength
+   treatment in the prose block below. Long-form legal text is read, not
+   scanned, and a half-strength underline is too quiet to find in a wall of
+   it; the reference underlines prose links outright. */
+.inline-link-underline {
   text-decoration-line: underline;
   text-decoration-color: currentColor;
   text-decoration-color: color-mix(
@@ -432,8 +563,7 @@ html.lenis {
   transition: text-decoration-color var(--dur-bbs) var(--ease-bbs);
 }
 
-.inline-link-underline:hover,
-.content-rte a:hover {
+.inline-link-underline:hover {
   text-decoration-color: currentColor;
 }
 
@@ -519,18 +649,85 @@ html.lenis {
    :where() keeps the inner half at zero specificity, so the whole selector
    is 0-1-0 — enough to beat the 0-0-1 element reset, weak enough that a
    Designer class still wins. */
-.content-rte :where(h1, h2, h3, h4, h5, h6, p) {
-  margin-top: 1em;
-  margin-bottom: 0.5em;
+/* Type first. The h/p inside prose carry no class, so their faces and sizes
+   have to be named here too — otherwise they fall through to Webflow's own
+   heading defaults and the document stops belonging to the type system. */
+.content-rte {
+  font-family: var(--_typography-scale---family--body);
+  font-size: var(--_typography-role---size--body);
+  font-weight: var(--_typography-scale---weight--light);
+  line-height: var(--_typography-scale---line-height--body);
 }
 
-.content-rte :where(ul, ol) {
-  margin-top: 1em;
+.content-rte :where(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--_typography-scale---family--heading);
+  font-weight: var(--_typography-scale---weight--light);
+  line-height: var(--_typography-scale---line-height--tight);
+}
+
+.content-rte :where(h1, h2) {
+  font-size: var(--_typography-role---size--h2);
+}
+
+.content-rte :where(h3) {
+  font-size: var(--_typography-role---size--h3);
+}
+
+.content-rte :where(h4, h5, h6) {
+  font-size: var(--_typography-role---size--h4);
+}
+
+.content-rte :where(p, ul, ol) {
+  margin-top: 0;
+  margin-bottom: 1.5em;
+}
+
+/* Rhythm. A section heading opens a new part of the document and gets real
+   air above it — the reference sets 80px at the desktop scale. A minor
+   heading belongs to the paragraph beneath it, so it sits close to what
+   follows and takes a smaller gap above.
+
+   The multipliers differ per level on purpose: em resolves against the
+   element's OWN font-size, so a single value would mean 80px on one heading
+   and 133px on the next. 2em of h2 (40px), 3.333em of h3 (24px) and 2.222em
+   of h4-h6 (18px) all land where they should, and still scale with the
+   fluid root because the sizes themselves do. */
+.content-rte :where(* + h1, * + h2) {
+  margin-top: 2em;
+}
+
+.content-rte :where(* + h3) {
+  margin-top: 3.333em;
+}
+
+.content-rte :where(* + h4, * + h5, * + h6) {
+  margin-top: 2.222em;
+}
+
+.content-rte :where(h1, h2, h3) {
   margin-bottom: 1em;
 }
 
+.content-rte :where(h4, h5, h6) {
+  margin-bottom: 0.556em;
+}
+
 .content-rte li {
-  margin-bottom: 0.25em;
+  margin-bottom: 0.5em;
+}
+
+/* Prose links: solid underline that clears on hover, matching the reference.
+   The inverse of the .inline-link-underline treatment in §05, and the reason
+   the two are no longer one rule. */
+.content-rte a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: currentColor;
+  transition: text-decoration-color var(--dur-bbs) var(--ease-bbs);
+}
+
+.content-rte a:hover {
+  text-decoration-color: transparent;
 }
 
 /* The list indent and the first/last-child margin trims already live in
@@ -718,7 +915,11 @@ html.lenis {
   .button-link .icon,
   .link-underline::after,
   .inline-link-underline,
-  .content-rte a {
+  .content-rte a,
+  [data-nav-part="bar"],
+  [data-nav-part="logo"],
+  [data-nav-part="toggle-icon"],
+  [data-nav-part="actions"] {
     transition: none !important;
   }
 
@@ -735,6 +936,53 @@ html.lenis {
 /* Optional class for code-only embeds that should occupy no layout space. */
 .g-embed-code {
   display: none !important;
+}
+
+/* Video library (/design/video-library). The URL row is built by
+   src/modules/video-library.ts, so it has no Designer class to style and is
+   dressed here. Internal tooling, hence §08 rather than a component section. */
+.video-url {
+  display: flex;
+  align-items: stretch;
+  gap: var(--_spacing---8);
+}
+
+.video-url input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: var(--_spacing---8) var(--_spacing---10);
+  border: var(--_spacing---hairline) solid
+    var(--_colors-semantic---border--default);
+  background: transparent;
+  color: var(--_colors-semantic---text--secondary);
+  font-family: var(--_typography-scale---family--body);
+  font-size: var(--_typography-role---size--caption);
+  /* The URLs are long and uniform; clipping beats wrapping the card. */
+  text-overflow: ellipsis;
+}
+
+.video-url button {
+  flex: 0 0 auto;
+  padding: var(--_spacing---8) var(--_spacing---12);
+  border: var(--_spacing---hairline) solid
+    var(--_colors-semantic---border--default);
+  background: transparent;
+  color: var(--_colors-semantic---text--primary);
+  font-family: var(--_typography-scale---family--heading);
+  font-size: var(--_typography-role---size--caption);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 200ms, color 200ms;
+}
+
+.video-url button:hover {
+  border-color: var(--_colors-semantic---border--strong);
+}
+
+/* The nav panel is hidden until JS opens it (§05). No JS runs on the canvas,
+   so without this the panel would be uneditable in the Designer. */
+.w-editor [data-nav="panel"] {
+  visibility: visible !important;
 }
 
 /* Keep future JS-driven entrance animations visible in the Editor. */

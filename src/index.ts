@@ -4,6 +4,9 @@
 // no-ops when its selector is absent from the page.
 
 import { initSmoothScroll } from './modules/smooth-scroll';
+import { initNav } from './modules/nav';
+import { initFooter } from './modules/footer';
+import { initVideoLibrary } from './modules/video-library';
 
 // Release the pre-paint scroll lock set by the head bootstrap (loader.html).
 // Must stay FIRST and unconditional: anything above it that throws leaves the
@@ -23,4 +26,16 @@ document.documentElement.classList.remove('is-loading');
 // the scroll callback or stop/start it (parallax, nav, modals), and pass it
 // in. It is undefined under prefers-reduced-motion, which is also the signal
 // for those modules to skip their motion.
-initSmoothScroll();
+const lenis = initSmoothScroll();
+
+// Takes Lenis so opening the menu can stop the scroll rather than fighting it
+// with overflow:hidden; falls back to the .nav-open class when Lenis is absent.
+initNav(lenis);
+
+// Mobile-only link-column accordions. No Lenis dependency: the panels are in
+// normal flow, so nothing here touches the scroll.
+initFooter();
+
+// Internal tool: prints each background video's CDN URL on /design/video-library
+// so it can be copied for use elsewhere. No-ops on every other page.
+initVideoLibrary();
