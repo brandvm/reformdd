@@ -734,9 +734,9 @@ html.nav-open {
    §03 — that is where the rest of the Rich Text patching sits, and its
    versions also cover the wrapper div Webflow sometimes nests. */
 
-/* Background glow blobs. The Webflow Glow component owns colours, layer
-   geometry, opacity, and responsive sizing. Adjust its variants to change
-   the spread and intensity; the masks alone do not soften a small bright blob.
+/* Background glow blobs. The Webflow Glow component's shared styles and
+   layout variables own spread, opacity, and responsive sizing. Variants
+   choose the colour pair and mirror the layers for left or right placement.
 
    Keep these standard and WebKit masks identical to the native classes so
    both rendering paths use the same falloff. The transform hint supports
