@@ -501,6 +501,54 @@ html.nav-open {
   border-bottom-color: var(--_colors-semantic---border--subtle);
 }
 
+/* The panel is a sheet on tablet and phone, and it has to be able to scroll
+   itself. Opening the menu stops Lenis, so the page behind is locked and the
+   panel is the only thing left that could move — anything it pushes past the
+   fold is simply unreachable. That is what cut the second nav tile in half
+   and put the Contact button off-screen entirely.
+
+   Setting overflow alone does not fix it, which is the trap here: the open
+   animation in nav.ts tweens height to `auto` and leaves it there, so the box
+   grows to fit its content and never has anything to overflow. A ceiling is
+   what turns it into a scroller. min-height cannot do that job — it is a
+   floor, and raising it only makes a short menu taller.
+
+   max-height is also the ceiling that does not fight the height tween: GSAP
+   measures the clamped height when it resolves `auto`, so the open still
+   animates to the right size instead of overshooting and snapping back.
+
+   dvh, not vh: on mobile vh is the tallest the viewport ever gets, so a 100vh
+   sheet parks its last screenful underneath the browser chrome — the very
+   content the cap exists to reveal.
+
+   Only the y axis. overflow-x stays hidden from the Designer class, which is
+   what clips the content during the height wipe. */
+@media (max-width: 991px) {
+  [data-nav="panel"] {
+    max-height: 100dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* Give the bar something to hide the scrolled content behind. It already
+     paints above the panel, but it is transparent while the menu is open —
+     harmless as long as nothing moved underneath it, and wrong the moment
+     the panel above could scroll: the links rode up through the logo and
+     the close button.
+
+     The panel's own page colour, so this reads as the links disappearing
+     under the bar rather than as a second surface appearing on top of the
+     first. Scoped to the breakpoints where the panel scrolls, because the
+     desktop panel is a fixed band that never moves under the bar.
+
+     Background only. The border that would separate the two is the same one
+     the rule below keeps off an open menu, where it drew a line across the
+     middle of the panel. */
+  [data-nav-open] [data-nav-part="bar"] {
+    background-color: var(--_colors-semantic---background--page);
+  }
+}
+
 /* Footer link-column accordions. Closed state is applied only once
    src/modules/footer.ts has marked the footer as its own — without that
    guard a bundle that failed to load would leave the footer links
