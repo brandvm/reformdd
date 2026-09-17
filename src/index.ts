@@ -8,6 +8,7 @@ import { initNav } from './modules/nav';
 import { initFooter } from './modules/footer';
 import { initVideoLibrary } from './modules/video-library';
 import { initGlow } from './modules/glow';
+import { initEnvironmentSwitcher } from './modules/environment-switcher';
 
 // Release the pre-paint scroll lock set by the head bootstrap (loader.html).
 // Must stay FIRST and unconditional: anything above it that throws leaves the
@@ -67,3 +68,9 @@ run('glow', initGlow);
 // Internal tool: prints each background video's CDN URL on /design/video-library
 // so it can be copied for use elsewhere. No-ops on every other page.
 run('video library', initVideoLibrary);
+
+// Internal tool: the bottom-left Dev / Staging switcher. No-ops off *.webflow.io
+// and inside the Designer, so it never reaches a visitor. Last on purpose — it
+// is the only module that appends to <body>, and a switcher is most useful when
+// the modules above it are the ones misbehaving.
+run('environment switcher', initEnvironmentSwitcher);

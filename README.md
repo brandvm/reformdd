@@ -41,6 +41,7 @@ pnpm install
 pnpm dev      # esbuild watch + server on :3000 (unminified, sourcemaps)
 pnpm build    # minified -> dist/
 pnpm check    # tsc --noEmit
+pnpm test     # build + Playwright browser checks
 ```
 
 ## Webflow integration
@@ -61,11 +62,42 @@ repository only updates the external JS and CSS bundles.
 
 ## Daily
 
-- `pnpm dev`, then on the `.webflow.io` site append `?bv-dev=1` to the URL →
-  your browser loads localhost with live reload. `?bv-dev=0` to exit.
+- Run `pnpm dev`, then click the small **Staging** pill in the bottom-left of
+  the `.webflow.io` site and choose **Dev**. Choose **Staging** to switch back.
+  The page reloads and remembers your choice. The control starts collapsed;
+  click elsewhere or press Escape to collapse it again.
+- The pill shows the bundle actually loaded. If localhost fails and the loader
+  uses staging, it shows **Staging** with a fallback note when expanded.
+  Start `pnpm dev` and select **Dev** again to retry. If staging falls back to a
+  pinned release, the note identifies that fallback; select **Staging** to retry.
+- `?bv-dev=1` / `?bv-dev=0` still work, including when localStorage is blocked.
 - `git push` → client-facing staging bundle updates in ~1 min (no Webflow publish)
 - Live reload works in the browser. It does **not** work on the Designer canvas,
   which never runs scripts — reload the Designer tab instead.
+
+The switcher is limited to `*.webflow.io`, hidden in the Webflow editor/Designer
+and in print, and isolated from site styles with Shadow DOM, so it never reaches
+a visitor. It lives in `src/modules/environment-switcher.ts` and is the last
+entry in the `src/index.ts` manifest. It has no runtime dependencies.
+
+Its fallback awareness comes from the loader, not the bundle:
+`window.BV.source` records which URL actually executed, so a JS fallback also
+drops the local stylesheet and re-points `bv-css` at the bundle that won. That
+is why the switcher cannot be updated by pushing alone — see the note in
+[Webflow integration](#webflow-integration).
+
+### Verify the switcher
+
+```sh
+pnpm exec playwright install chromium  # one-time browser setup
+pnpm test                              # build + browser checks
+```
+
+The tests assemble a page from the real `loader.html` snippets and mock every
+asset response, covering mode selection, URL/storage persistence, both fallback
+paths, keyboard and mobile interaction, and the host/editor restrictions —
+without starting a server or touching the live site. They read `STAG`, `DEV` and
+`VER` out of the loader, so a release bump does not break them.
 
 ## Release (launch / retainer updates)
 
@@ -136,6 +168,8 @@ src/
   index.ts            entry point; a manifest of module imports and calls
   styles.css          the whole stylesheet, in numbered sections
   modules/            one file per feature, each exporting an init function
+  globals.d.ts        types for the globals the loader and Webflow set
+tests/                Playwright checks; browser-level, no server needed
 build.mjs             esbuild config and dev server
 loader.html           the three Webflow snippets, documented
 ```
