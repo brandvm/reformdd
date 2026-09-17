@@ -847,6 +847,56 @@ html.nav-open {
   );
 }
 
+/* Studio card row. Webflow owns the ≤991px switch to a scroll container and
+   the card sizing. What is left here is what its style panel cannot say.
+
+   Both axes: the Designer's Overflow control writes the `overflow` shorthand,
+   so asking for a horizontal scroller also creates a vertical one. A y-axis
+   scroll container here would swallow vertical swipes that belong to the
+   page — the gesture lands on the track and never reaches Lenis.
+
+   Snap, so a swipe settles on a card edge rather than wherever momentum
+   happened to run out. scroll-padding-left matches the track's own padding:
+   without it a snapped card sits flush to the viewport edge instead of
+   lining up with the section heading above it.
+
+   overscroll-behavior-x keeps a swipe past the last card from chaining into
+   the browser's back gesture, which on iOS reads as the page being dragged
+   out from under you mid-scroll.
+
+   Nothing here smooths the scroll, and that is deliberate. Lenis runs with
+   syncTouch off, so touch scrolling everywhere on this site is native — the
+   page included. Native momentum plus snap is what matches it.
+
+   One row, whatever the card count. Webflow's grid is two explicit columns,
+   which is right on desktop but would wrap a third card onto a second row
+   here — a 2x2 block that wants to scroll down, against a track that only
+   scrolls sideways. Clearing the template and flowing into columns makes
+   every card an implicit column instead, so the row grows rightward as
+   cards are added rather than folding.
+
+   Scrolling stays conditional, which is the point: the implicit columns are
+   `1fr` (from the Designer's auto-columns), and a grid column's automatic
+   minimum respects the card's own min-width. Cards that fit share the track
+   and it does not scroll; add enough that they cannot, and each one clamps
+   to its min-width and the row overflows. Two cards on a tablet still sit
+   side by side, exactly as now. */
+@media (max-width: 991px) {
+  .studio-list {
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: var(--_layout---section--padding-h);
+  }
+
+  .offering-card {
+    scroll-snap-align: start;
+  }
+}
+
 /* Mobile CTA bar. Webflow owns the bar's look and the ≤767px reveal; what is
    left here is the three things its style panel cannot say.
 
