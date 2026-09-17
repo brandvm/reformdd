@@ -804,7 +804,17 @@ html.nav-open {
 
 /* Background glow blobs. The Webflow Glow component's shared styles and
    layout variables own spread, opacity, and responsive sizing. Variants
-   choose the colour pair and mirror the layers for left or right placement.
+   choose the colour pair and the placement: they mirror the layers for left
+   or right, and the Center ones move the blob off the section's top edge
+   onto its midline.
+
+   Vertical placement lives in offsets and margins, not a translate, and has
+   to stay there. The drift below animates x/y on this same element, so GSAP
+   owns its transform and would overwrite a centering translate on the first
+   frame. The Center variants therefore centre with top/bottom 0 and auto
+   block margins — which also sidesteps the glow's height being three
+   different values across the breakpoints, so nothing has to be recomputed
+   when one of them moves.
 
    Keep these standard and WebKit masks identical to the native classes so
    both rendering paths use the same falloff. The transform hint supports
