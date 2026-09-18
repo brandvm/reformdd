@@ -33,23 +33,13 @@
    ============================================================ */
 
 :root {
-  /* Fluid scale — sets the root font-size so every rem value coming out
-     of the Designer scales with the viewport. Ideal = the width the
-     design was built at. These starting widths come from the reference;
-     tune them when the Reformd design is established. */
-  --size-unit: 16;
-  --size-container-ideal: 1680;
-  --size-container-min: 991px;
-  --size-container-max: 1680px;
+  /* Fluid scale — sets the root font-size so every em/rem value coming out
+     of the Designer scales with the viewport. One linear ramp across every
+     breakpoint, clamped at both ends: 14px at a 390px phone, 16px at the
+     1680px frame the design was drawn at, flat outside that range.
+     Slope = (16 - 14) / (1680 - 390) = 1/645. */
 
-  --size-container: clamp(
-    var(--size-container-min),
-    100vw,
-    var(--size-container-max)
-  );
-  --size-font: calc(
-    var(--size-container) / (var(--size-container-ideal) / var(--size-unit))
-  );
+  --size-font: clamp(14px, calc(14px + (100vw - 390px) / 645), 16px);
 
   font-size: var(--size-font);
 
@@ -87,33 +77,6 @@
 
   /* Zoom */
   --image-zoom-scale: 1.12;
-}
-
-/* Tablet */
-@media screen and (max-width: 991px) {
-  :root {
-    --size-container-ideal: 834;
-    --size-container-min: 768px;
-    --size-container-max: 991px;
-  }
-}
-
-/* Mobile landscape */
-@media screen and (max-width: 767px) {
-  :root {
-    --size-container-ideal: 430;
-    --size-container-min: 480px;
-    --size-container-max: 767px;
-  }
-}
-
-/* Mobile portrait */
-@media screen and (max-width: 479px) {
-  :root {
-    --size-container-ideal: 430;
-    --size-container-min: 320px;
-    --size-container-max: 428px;
-  }
 }
 
 /* ============================================================
@@ -997,9 +960,10 @@ html.nav-open {
 
 /* Figma width passthrough — set --figma-size to the raw design pixel
    number. rem keeps the conversion tied to the root scale even inside
-   components with a different font-size. */
+   components with a different font-size. 16 is the design's px-per-rem:
+   the root is exactly 16px at the 1680px frame the design was drawn at. */
 [style*="--figma-size"] {
-  max-width: calc(1rem * var(--figma-size) / var(--size-unit));
+  max-width: calc(1rem * var(--figma-size) / 16);
 }
 
 /* Gradient fills */
