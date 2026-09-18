@@ -146,7 +146,9 @@ body {
 }
 
 body {
-  font-feature-settings: "liga" 1, "calt" 1;
+  font-feature-settings:
+    "liga" 1,
+    "calt" 1;
 }
 
 /* Element defaults Webflow's normalize invents. Designer classes are
@@ -486,10 +488,7 @@ html.nav-open {
 [data-nav-scrolled] [data-nav="panel"] {
   padding-top: calc(
     var(--_layout---nav--panel-padding-t) -
-      (
-        var(--_layout---nav--height) -
-          var(--_layout---nav--height-scrolled, 4.5em)
-      )
+      (var(--_layout---nav--height) - var(--_layout---nav--height-scrolled, 4.5em))
   );
 }
 
@@ -825,26 +824,14 @@ html.nav-open {
     #000 45%,
     rgba(0, 0, 0, 0) 100%
   );
-  mask-image: radial-gradient(
-    ellipse at center,
-    #000 45%,
-    rgba(0, 0, 0, 0) 100%
-  );
+  mask-image: radial-gradient(ellipse at center, #000 45%, rgba(0, 0, 0, 0) 100%);
   will-change: transform;
 }
 
 .glow-layer-a,
 .glow-layer-b {
-  -webkit-mask-image: radial-gradient(
-    closest-side,
-    #000 0%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  mask-image: radial-gradient(
-    closest-side,
-    #000 0%,
-    rgba(0, 0, 0, 0) 100%
-  );
+  -webkit-mask-image: radial-gradient(closest-side, #000 0%, rgba(0, 0, 0, 0) 100%);
+  mask-image: radial-gradient(closest-side, #000 0%, rgba(0, 0, 0, 0) 100%);
 }
 
 /* Studio card row. Webflow owns the ≤991px switch to a scroll container and
@@ -924,8 +911,7 @@ html.nav-open {
     --cta-bar-height: calc(
       (var(--_layout---cta-bar--padding, 0.75em) * 2) +
         (var(--_layout---cta-bar--button-padding-v, 1.125em) * 2) +
-        var(--_typography-role---size--button, 1em) +
-        env(safe-area-inset-bottom)
+        var(--_typography-role---size--button, 1em) + env(safe-area-inset-bottom)
     );
     padding-bottom: var(--cta-bar-height);
   }
@@ -1032,7 +1018,8 @@ html.nav-open {
 .mask-right {
   --mask-fade: 14%;
 
-  -webkit-mask-image: linear-gradient(
+  -webkit-mask-image:
+    linear-gradient(
       to bottom,
       transparent 0,
       #000 var(--mask-t, 0%),
@@ -1046,7 +1033,8 @@ html.nav-open {
       #000 calc(100% - var(--mask-r, 0%)),
       transparent 100%
     );
-  mask-image: linear-gradient(
+  mask-image:
+    linear-gradient(
       to bottom,
       transparent 0,
       #000 var(--mask-t, 0%),
@@ -1154,8 +1142,7 @@ html.nav-open {
   flex: 1 1 auto;
   min-width: 0;
   padding: var(--_spacing---8) var(--_spacing---10);
-  border: var(--_spacing---hairline) solid
-    var(--_colors-semantic---border--default);
+  border: var(--_spacing---hairline) solid var(--_colors-semantic---border--default);
   background: transparent;
   color: var(--_colors-semantic---text--secondary);
   font-family: var(--_typography-scale---family--body);
@@ -1167,15 +1154,16 @@ html.nav-open {
 .video-url button {
   flex: 0 0 auto;
   padding: var(--_spacing---8) var(--_spacing---12);
-  border: var(--_spacing---hairline) solid
-    var(--_colors-semantic---border--default);
+  border: var(--_spacing---hairline) solid var(--_colors-semantic---border--default);
   background: transparent;
   color: var(--_colors-semantic---text--primary);
   font-family: var(--_typography-scale---family--heading);
   font-size: var(--_typography-role---size--caption);
   text-transform: uppercase;
   cursor: pointer;
-  transition: border-color 200ms, color 200ms;
+  transition:
+    border-color 200ms,
+    color 200ms;
 }
 
 .video-url button:hover {
