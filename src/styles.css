@@ -40,7 +40,7 @@
   --size-unit: 16;
   --size-container-ideal: 1680;
   --size-container-min: 991px;
-  --size-container-max: 1440px;
+  --size-container-max: 1680px;
 
   --size-container: clamp(
     var(--size-container-min),
