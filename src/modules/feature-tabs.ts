@@ -98,13 +98,22 @@ function setupFeatureTabs(root: HTMLElement): void {
       dotList[i]?.setAttribute('aria-selected', String(i === index));
     }
 
-    // Stacked: the class swap above is the whole state change. Nothing is
-    // side by side, so there is no width to tween and no dots on screen.
+    // Stacked: the panels stop being a row and lie on top of each other, so
+    // there is no width to tween and the rails are off — the dots have become
+    // the labelled tab bar. The copy still crossfades, because all three
+    // occupy the same box and a hard swap would read as a glitch.
     if (stack.matches) {
+      const em = parseFloat(getComputedStyle(root).fontSize) || 16;
       gsap.set(panels, { clearProps: 'width' });
+      gsap.set(dots, { clearProps: 'x' });
       for (let i = 0; i < panels.length; i++) {
-        gsap.set(contents[i], { autoAlpha: i === index ? 1 : 0, y: 0 });
-        gsap.set(rails[i], { autoAlpha: 1 });
+        gsap.to(contents[i], {
+          autoAlpha: i === index ? 1 : 0,
+          y: i === index ? 0 : em,
+          duration: immediate ? 0 : 0.5,
+          ease: 'expo.out',
+          overwrite: 'auto',
+        });
       }
       return;
     }
