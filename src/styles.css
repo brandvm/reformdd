@@ -561,6 +561,38 @@ html.nav-open {
   }
 }
 
+/* Feature tabs — the expanding panel row on Sweat. Widths, colours and the
+   rotated rail labels are all Webflow classes; only these two things are not.
+
+   1. backdrop-filter. A closed panel sits over the section photograph as a
+      darkened, blurred sliver, and the blur is the part Webflow's style panel
+      cannot set. Deliberately a literal: 4px is used once, on one component,
+      so a Blur/Tab token would be a variable with a single reader. It rides
+      with the Black 40 fill the class applies, and both leave together the
+      moment the panel opens.
+
+      Not filter: blur() — that would blur the panel's own label with it.
+      Not on the open panel either: a backdrop-filter over the full row is a
+      viewport-sized repaint on every frame of the width tween. */
+[data-tabs="panel"]:not(.is-active) {
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+/* 2. The no-JS resting state. The first panel ships carrying is-active, so
+      the widths are already right before the bundle lands — what is not is
+      the copy, which the class parks at opacity 0 for the entry tween to
+      bring in. A bundle that never arrives would leave the open panel
+      looking empty over the photograph.
+
+      So until src/modules/feature-tabs.ts marks the row as its own, every
+      panel's copy is simply visible. The closed pair clip it against their
+      7.75em anyway, and the open one reads exactly as designed. */
+[data-tabs="root"]:not([data-tabs-ready]) [data-tabs="content"] {
+  opacity: 1;
+  transform: none;
+}
+
 .link-underline {
   position: relative;
 }
