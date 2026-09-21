@@ -7,10 +7,8 @@ export function initEnvironmentSwitcher() {
   if (document.getElementById('bv-environment')) return;
 
   const isDev = config.source ? config.source === config.devBase : !!config.dev;
-  const releaseFallback =
-    !!config.source &&
-    config.source !== config.devBase &&
-    config.source !== config.stag;
+  const releaseFallback = !!config.source
+    && config.source !== config.devBase && config.source !== config.stag;
   const fallback = (!!config.dev && !isDev) || releaseFallback;
   const current = isDev ? 'Dev' : 'Staging';
   const host = document.createElement('div');
@@ -107,11 +105,9 @@ export function initEnvironmentSwitcher() {
   root.querySelector('.dot')!.toggleAttribute('data-dev', isDev);
   launcher.setAttribute('aria-label', `Choose environment (${current})`);
   if (releaseFallback) status.textContent = 'Staging unavailable · using release';
-  launcher.title = releaseFallback
-    ? 'Staging could not load. Using the pinned release.'
-    : fallback
-      ? 'Local dev could not load. Using staging.'
-      : 'Switch between staging and local dev';
+  launcher.title = releaseFallback ? 'Staging could not load. Using the pinned release.'
+    : fallback ? 'Local dev could not load. Using staging.'
+    : 'Switch between staging and local dev';
 
   function expand(open: boolean, focus = false) {
     launcher.hidden = open;
@@ -120,8 +116,7 @@ export function initEnvironmentSwitcher() {
     control.toggleAttribute('data-expanded', open);
     launcher.setAttribute('aria-expanded', String(open));
     if (focus) {
-      if (open)
-        root.querySelector<HTMLButtonElement>('[aria-pressed="true"]')?.focus();
+      if (open) root.querySelector<HTMLButtonElement>('[aria-pressed="true"]')?.focus();
       else launcher.focus();
     }
   }
@@ -135,18 +130,12 @@ export function initEnvironmentSwitcher() {
       // URL flag also works when localStorage is unavailable.
       const url = new URL(location.href);
       url.searchParams.set('bv-dev', dev ? '1' : '0');
-      try {
-        localStorage.setItem('bv-dev', dev ? '1' : '0');
-      } catch {
-        /* URL is enough. */
-      }
+      try { localStorage.setItem('bv-dev', dev ? '1' : '0'); } catch { /* URL is enough. */ }
       location.assign(url.href);
     });
   });
   launcher.addEventListener('click', () => expand(true, true));
-  root
-    .querySelector('.minimize')!
-    .addEventListener('click', () => expand(false, true));
+  root.querySelector('.minimize')!.addEventListener('click', () => expand(false, true));
   control.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape' || choices.hidden) return;
     event.preventDefault();
