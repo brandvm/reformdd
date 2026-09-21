@@ -222,7 +222,7 @@ svg {
    and loses to this rule on source order. Fallback is `none`, so a
    renamed collection/group/variable degrades to uncapped, not to 940. */
 .w-layout-blockcontainer {
-  max-width: var(--_layout---container--max-width, none);
+  max-width: var(--_layout---section--max-width, none);
 }
 
 /* Forms — Webflow hardcodes a #3898ec focus ring and grey/pink
