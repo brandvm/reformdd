@@ -156,6 +156,11 @@ function setupFeatureTabs(root: HTMLElement): void {
         overwrite: 'auto',
       });
 
+      // Only the opening panel is tweened. The closing one is left where it
+      // is and simply fades, because removing is-open is already the fade —
+      // and the fromTo below re-seeds y: em every time a panel opens, so the
+      // offset never has to be put back by hand. Setting it on the way out
+      // instead yanked the copy downward while it was still visible.
       if (i === index) {
         gsap.fromTo(
           contents[i],
@@ -168,10 +173,6 @@ function setupFeatureTabs(root: HTMLElement): void {
             overwrite: 'auto',
           },
         );
-      } else {
-        // Out at once, not crossfaded: two sets of copy dissolving through
-        // each other over the same photograph reads as a rendering fault.
-        gsap.set(contents[i], { y: em });
       }
     }
 
