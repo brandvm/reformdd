@@ -20,10 +20,16 @@ import { gsap } from 'gsap';
 
 const hook = (name: string) => `[data-tabs="${name}"]`;
 
-/** Below this the row stops being a row: the panels stack and the rails
- *  become a tab bar along the bottom, so there is no width to animate and
- *  no dots to place. Matches Webflow's small breakpoint. */
-const STACK = '(max-width: 767px)';
+/** Below this the row stops being a row: the panels stack and the dots
+ *  become a labelled tab bar along the bottom, so there is no width to
+ *  animate and no dots to place.
+ *
+ *  Must match the breakpoint the Webflow classes switch at — currently
+ *  medium, 991. If this is lower than the class, the panels are already
+ *  stacked at `width: auto` while this file is still tweening a pixel width
+ *  onto them, and an inline width beats the class: the stack collapses back
+ *  into slivers. */
+const STACK = '(max-width: 991px)';
 
 /** Panel width, rail crossfade, content entry. The content waits for the
  *  panel to be most of the way open before it starts. */
