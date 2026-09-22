@@ -564,68 +564,19 @@ html.nav-open {
 /* Feature tabs — the expanding panel row on Sweat. Widths, colours and the
    rotated rail labels are all Webflow classes; only these two things are not.
 
-   1. The collapsed-panel scrim. A closed panel reads as a darkened, blurred
-      sliver over the section photograph, and the blur is the part Webflow's
-      style panel cannot set.
+   1. backdrop-filter. A closed panel sits over the section photograph as a
+      darkened, blurred sliver, and the blur is the part Webflow's style panel
+      cannot set. Deliberately a literal: 4px is used once, on one component,
+      so a Blur/Tab token would be a variable with a single reader. It rides
+      with the Black 40 fill the class applies, and both leave together the
+      moment the panel opens.
 
-      It lives on a pseudo-element of a FIXED width rather than on the panel,
-      because a backdrop-filter is re-rasterised whenever the area it samples
-      changes — putting it on the panel itself would re-blur a growing region
-      on every frame of the width tween. This layer never resizes; it only
-      fades, so the blur is rasterised once. The panel underneath is
-      transparent (Webflow class) and this supplies the fill.
-
-      Not filter: blur() — that would blur the panel's own rail label too.
-
-      The 7.75em/6em widths are the one place this file repeats a number the
-      Designer owns. They have to match Feature Panel's collapsed width at
-      each breakpoint; if that class changes, change these with it. */
-[data-tabs="panel"]::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 7.75em;
-  background: var(--_colors---black-tint--black-40);
+      Not filter: blur() — that would blur the panel's own label with it.
+      Not on the open panel either: a backdrop-filter over the full row is a
+      viewport-sized repaint on every frame of the width tween. */
+[data-tabs="panel"]:not(.is-active) {
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
-  opacity: 1;
-  transition: opacity 400ms ease;
-  will-change: opacity;
-  pointer-events: none;
-}
-
-[data-tabs="panel"].is-active::before {
-  opacity: 0;
-}
-
-/* Promote what actually animates. These elements move for the life of the
-   page rather than once, which is the case where a standing will-change
-   earns its memory: the alternative is a promotion and a demotion on every
-   interaction. contain: paint matches the overflow: hidden the panel class
-   already sets, so the browser can skip anything outside the sliver. */
-[data-tabs="panel"] {
-  will-change: width;
-  contain: paint;
-}
-
-[data-tabs="content"] {
-  will-change: transform, opacity;
-}
-
-@media (max-width: 991px) {
-  [data-tabs="panel"]::before {
-    width: 6em;
-  }
-}
-
-/* Stacked: the panels lie on top of each other at full width, so a sliver
-   scrim would darken the whole section three times over. */
-@media (max-width: 767px) {
-  [data-tabs="panel"]::before {
-    display: none;
-  }
 }
 
 /* 2. The no-JS resting state. The first panel ships carrying is-active, so

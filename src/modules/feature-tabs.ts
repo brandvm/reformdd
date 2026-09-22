@@ -20,16 +20,10 @@ import { gsap } from 'gsap';
 
 const hook = (name: string) => `[data-tabs="${name}"]`;
 
-/** Below this the row stops being a row: the panels stack and the dots
- *  become a labelled tab bar along the bottom, so there is no width to
- *  animate and no dots to place.
- *
- *  Must match the breakpoint the Webflow classes switch at — currently
- *  medium, 991. If this is lower than the class, the panels are already
- *  stacked at `width: auto` while this file is still tweening a pixel width
- *  onto them, and an inline width beats the class: the stack collapses back
- *  into slivers. */
-const STACK = '(max-width: 991px)';
+/** Below this the row stops being a row: the panels stack and the rails
+ *  become a tab bar along the bottom, so there is no width to animate and
+ *  no dots to place. Matches Webflow's small breakpoint. */
+const STACK = '(max-width: 767px)';
 
 /** Panel width, rail crossfade, content entry. The content waits for the
  *  panel to be most of the way open before it starts. */
@@ -61,32 +55,18 @@ function setupFeatureTabs(root: HTMLElement): void {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 
   let active = 0;
-  let collapsed = 0;
 
   // Marks the row as JS-owned. Until it lands, CSS keeps the first panel open
   // and every rail visible, so a failed bundle leaves three readable panels
   // rather than a row of unlabelled slivers.
   root.setAttribute('data-tabs-ready', '');
 
-  /** Caches the resting closed width, so this file never has to know that the
-   *  class says 7.75em.
-   *
-   *  Measured only at rest, never during setActive. Reading it mid-switch is
-   *  the trap: `active` is reassigned before the tweens are retargeted, so the
-   *  first panel that is no longer active is the one that was open a moment
-   *  ago, still sitting at its full width. Measuring that returns the OPEN
-   *  width as the closed one, and `open` below then resolves to a negative
-   *  number — the row collapses instead of expanding.
-   *
-   *  Selecting on the class rather than the index is the other half: after
-   *  clearProps the classes are the only truthful record of which panel is
-   *  meant to be wide. */
-  function measure(): void {
-    // The tweens leave an inline px width behind. Clearing it first is what
-    // makes this read the stylesheet's em rather than the last viewport's px.
-    gsap.set(panels, { clearProps: 'width' });
-    const closed = panels.find((p) => !p.classList.contains('is-active'));
-    collapsed = closed ? closed.getBoundingClientRect().width : 0;
+  /** The closed width, read off a panel that is currently closed. Two of the
+   *  three always are, so there is no need to force a measurement pass — and
+   *  no need for this file to know that the class says 7.75em. */
+  function collapsedWidth(): number {
+    const closed = panels.find((_, i) => i !== active);
+    return closed ? closed.getBoundingClientRect().width : 0;
   }
 
   /** Where the dot group sits for a given open panel. The dots track the
@@ -100,7 +80,9 @@ function setupFeatureTabs(root: HTMLElement): void {
       ? parseFloat(getComputedStyle(contents[index] as HTMLElement).left) || 0
       : 0;
     const trailing = panels.length - 1 - index;
-    return root.clientWidth - collapsed * trailing - inset - dots.offsetWidth;
+    return (
+      root.clientWidth - collapsedWidth() * trailing - inset - dots.offsetWidth
+    );
   }
 
   function setActive(index: number, immediate = false): void {
@@ -111,13 +93,7 @@ function setupFeatureTabs(root: HTMLElement): void {
       panels[i].classList.toggle('is-active', i === index);
       // The dot's lit state is a Webflow combo class, not something this file
       // styles — so the class is the write, and aria-selected rides with it.
-      // is-active-dot, not is-active: Webflow cannot hold two combo classes
-      // under the same name, and the panel already owns that one.
-      dotList[i]?.classList.toggle('is-active-dot', i === index);
-      // Opacity is the class's job, not an inline style, so the Designer can
-      // show the open panel's copy instead of an element stuck at opacity 0.
-      // Only the y offset below stays inline — that is the entry motion.
-      contents[i]?.classList.toggle('is-open', i === index);
+      dotList[i]?.classList.toggle('is-active', i === index);
       rails[i]?.setAttribute('aria-pressed', String(i === index));
       dotList[i]?.setAttribute('aria-selected', String(i === index));
     }
@@ -132,6 +108,7 @@ function setupFeatureTabs(root: HTMLElement): void {
       gsap.set(dots, { clearProps: 'x' });
       for (let i = 0; i < panels.length; i++) {
         gsap.to(contents[i], {
+          autoAlpha: i === index ? 1 : 0,
           y: i === index ? 0 : em,
           duration: immediate ? 0 : 0.5,
           ease: 'expo.out',
@@ -142,6 +119,7 @@ function setupFeatureTabs(root: HTMLElement): void {
     }
 
     const em = parseFloat(getComputedStyle(root).fontSize) || 16;
+    const collapsed = collapsedWidth();
     const open = root.clientWidth - collapsed * (panels.length - 1);
     const d = immediate ? 0 : undefined;
 
@@ -162,16 +140,12 @@ function setupFeatureTabs(root: HTMLElement): void {
         overwrite: 'auto',
       });
 
-      // Only the opening panel is tweened. The closing one is left where it
-      // is and simply fades, because removing is-open is already the fade —
-      // and the fromTo below re-seeds y: em every time a panel opens, so the
-      // offset never has to be put back by hand. Setting it on the way out
-      // instead yanked the copy downward while it was still visible.
       if (i === index) {
         gsap.fromTo(
           contents[i],
-          { y: em },
+          { autoAlpha: 0, y: em },
           {
+            autoAlpha: 1,
             y: 0,
             duration: d ?? CONTENT_S,
             delay: immediate ? 0 : CONTENT_DELAY,
@@ -179,6 +153,10 @@ function setupFeatureTabs(root: HTMLElement): void {
             overwrite: 'auto',
           },
         );
+      } else {
+        // Out at once, not crossfaded: two sets of copy dissolving through
+        // each other over the same photograph reads as a rendering fault.
+        gsap.set(contents[i], { autoAlpha: 0, y: em });
       }
     }
 
@@ -199,9 +177,10 @@ function setupFeatureTabs(root: HTMLElement): void {
    *  Called whenever the measurements this module cached could have moved:
    *  a breakpoint change, or the row itself being resized. */
   function rebuild(): void {
-    // Must come first: dotsX and setActive both read the cached width, and at
-    // rest is the only moment it can be measured truthfully.
-    measure();
+    // The tweens leave an inline px width behind. Clear it first so the class
+    // supplies the resting width again and `collapsedWidth()` measures the
+    // stylesheet's em rather than the last viewport's pixels.
+    gsap.set(panels, { clearProps: 'width' });
     if (dots) gsap.set(dots, { left: 0, x: dotsX(active) });
     setActive(active, true);
   }
