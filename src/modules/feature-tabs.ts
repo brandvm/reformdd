@@ -93,7 +93,13 @@ function setupFeatureTabs(root: HTMLElement): void {
       panels[i].classList.toggle('is-active', i === index);
       // The dot's lit state is a Webflow combo class, not something this file
       // styles — so the class is the write, and aria-selected rides with it.
-      dotList[i]?.classList.toggle('is-active', i === index);
+      // is-active-dot, not is-active: Webflow cannot hold two combo classes
+      // under the same name, and the panel already owns that one.
+      dotList[i]?.classList.toggle('is-active-dot', i === index);
+      // Opacity is the class's job, not an inline style, so the Designer can
+      // show the open panel's copy instead of an element stuck at opacity 0.
+      // Only the y offset below stays inline — that is the entry motion.
+      contents[i]?.classList.toggle('is-open', i === index);
       rails[i]?.setAttribute('aria-pressed', String(i === index));
       dotList[i]?.setAttribute('aria-selected', String(i === index));
     }
@@ -108,7 +114,6 @@ function setupFeatureTabs(root: HTMLElement): void {
       gsap.set(dots, { clearProps: 'x' });
       for (let i = 0; i < panels.length; i++) {
         gsap.to(contents[i], {
-          autoAlpha: i === index ? 1 : 0,
           y: i === index ? 0 : em,
           duration: immediate ? 0 : 0.5,
           ease: 'expo.out',
@@ -143,9 +148,8 @@ function setupFeatureTabs(root: HTMLElement): void {
       if (i === index) {
         gsap.fromTo(
           contents[i],
-          { autoAlpha: 0, y: em },
+          { y: em },
           {
-            autoAlpha: 1,
             y: 0,
             duration: d ?? CONTENT_S,
             delay: immediate ? 0 : CONTENT_DELAY,
@@ -156,7 +160,7 @@ function setupFeatureTabs(root: HTMLElement): void {
       } else {
         // Out at once, not crossfaded: two sets of copy dissolving through
         // each other over the same photograph reads as a rendering fault.
-        gsap.set(contents[i], { autoAlpha: 0, y: em });
+        gsap.set(contents[i], { y: em });
       }
     }
 
