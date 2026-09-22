@@ -55,18 +55,32 @@ function setupFeatureTabs(root: HTMLElement): void {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 
   let active = 0;
+  let collapsed = 0;
 
   // Marks the row as JS-owned. Until it lands, CSS keeps the first panel open
   // and every rail visible, so a failed bundle leaves three readable panels
   // rather than a row of unlabelled slivers.
   root.setAttribute('data-tabs-ready', '');
 
-  /** The closed width, read off a panel that is currently closed. Two of the
-   *  three always are, so there is no need to force a measurement pass — and
-   *  no need for this file to know that the class says 7.75em. */
-  function collapsedWidth(): number {
-    const closed = panels.find((_, i) => i !== active);
-    return closed ? closed.getBoundingClientRect().width : 0;
+  /** Caches the resting closed width, so this file never has to know that the
+   *  class says 7.75em.
+   *
+   *  Measured only at rest, never during setActive. Reading it mid-switch is
+   *  the trap: `active` is reassigned before the tweens are retargeted, so the
+   *  first panel that is no longer active is the one that was open a moment
+   *  ago, still sitting at its full width. Measuring that returns the OPEN
+   *  width as the closed one, and `open` below then resolves to a negative
+   *  number — the row collapses instead of expanding.
+   *
+   *  Selecting on the class rather than the index is the other half: after
+   *  clearProps the classes are the only truthful record of which panel is
+   *  meant to be wide. */
+  function measure(): void {
+    // The tweens leave an inline px width behind. Clearing it first is what
+    // makes this read the stylesheet's em rather than the last viewport's px.
+    gsap.set(panels, { clearProps: 'width' });
+    const closed = panels.find((p) => !p.classList.contains('is-active'));
+    collapsed = closed ? closed.getBoundingClientRect().width : 0;
   }
 
   /** Where the dot group sits for a given open panel. The dots track the
@@ -80,9 +94,7 @@ function setupFeatureTabs(root: HTMLElement): void {
       ? parseFloat(getComputedStyle(contents[index] as HTMLElement).left) || 0
       : 0;
     const trailing = panels.length - 1 - index;
-    return (
-      root.clientWidth - collapsedWidth() * trailing - inset - dots.offsetWidth
-    );
+    return root.clientWidth - collapsed * trailing - inset - dots.offsetWidth;
   }
 
   function setActive(index: number, immediate = false): void {
@@ -124,7 +136,6 @@ function setupFeatureTabs(root: HTMLElement): void {
     }
 
     const em = parseFloat(getComputedStyle(root).fontSize) || 16;
-    const collapsed = collapsedWidth();
     const open = root.clientWidth - collapsed * (panels.length - 1);
     const d = immediate ? 0 : undefined;
 
@@ -181,10 +192,9 @@ function setupFeatureTabs(root: HTMLElement): void {
    *  Called whenever the measurements this module cached could have moved:
    *  a breakpoint change, or the row itself being resized. */
   function rebuild(): void {
-    // The tweens leave an inline px width behind. Clear it first so the class
-    // supplies the resting width again and `collapsedWidth()` measures the
-    // stylesheet's em rather than the last viewport's pixels.
-    gsap.set(panels, { clearProps: 'width' });
+    // Must come first: dotsX and setActive both read the cached width, and at
+    // rest is the only moment it can be measured truthfully.
+    measure();
     if (dots) gsap.set(dots, { left: 0, x: dotsX(active) });
     setActive(active, true);
   }
