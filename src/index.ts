@@ -9,6 +9,7 @@ import { initFooter } from './modules/footer';
 import { initVideoLibrary } from './modules/video-library';
 import { initGlow } from './modules/glow';
 import { initFeatureTabs } from './modules/feature-tabs';
+import { initAccordion } from './modules/accordion';
 import { initEnvironmentSwitcher } from './modules/environment-switcher';
 
 // Release the pre-paint scroll lock set by the head bootstrap (loader.html).
@@ -69,6 +70,10 @@ run('glow', initGlow);
 // Expanding feature panels on the Sweat page. Click-driven only, so there is
 // nothing to pause or clean up when it is absent — it no-ops off that page.
 run('feature tabs', initFeatureTabs);
+
+// Benefits accordion on the Sweat page — one row open at a time. No-ops on
+// any page without a data-acc root.
+run('accordion', initAccordion);
 
 // Internal tool: prints each background video's CDN URL on /design/video-library
 // so it can be copied for use elsewhere. No-ops on every other page.

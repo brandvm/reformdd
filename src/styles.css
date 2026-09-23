@@ -593,6 +593,23 @@ html.nav-open {
   transform: none;
 }
 
+/* Benefits accordion (src/modules/accordion.ts). Panels start closed so
+   the rows don't flash open before the script runs; the script owns the
+   height from then on. The triggers are Webflow Link elements the script
+   turns into role="button", so the cursor is set here, not by the tag. */
+[data-acc="panel"] {
+  height: 0;
+  overflow: hidden;
+}
+
+[data-acc="trigger"] {
+  cursor: pointer;
+}
+
+[data-acc="trigger"]:hover [data-acc="icon"] {
+  opacity: 0.7;
+}
+
 .link-underline {
   position: relative;
 }
@@ -1137,6 +1154,13 @@ html.nav-open {
 .w-select:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
+}
+
+/* Accordion rows draw their ring inside the row, since a 2px offset would
+   collide with the hairline of the row above. */
+[data-acc="trigger"]:focus-visible {
+  outline: 2px solid var(--_colors---brand--green);
+  outline-offset: -2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
