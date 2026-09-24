@@ -612,6 +612,66 @@ html.nav-open {
   opacity: 0.7;
 }
 
+/* S | Media Story (src/modules/media-story.ts). */
+
+/* Rich text body: Figma uses one blank 30px line between paragraphs */
+.media-story-scroll p { margin: 0; }
+.media-story-scroll p + p { margin-top: 1.6667em; } /* 30px at 18px Body L */
+
+/* Story variant — expanded state (class set by media-story.ts) */
+.s-media-story.is-expanded { height: 70em; padding-top: 4.75em; }            /* Figma: frame 1120, heading at y 76 */
+.s-media-story.is-expanded .sw-media-story { justify-content: flex-start; min-height: 0; }
+.s-media-story.is-expanded .media-story-col,
+.s-media-story.is-expanded .media-story-body,
+.s-media-story.is-expanded .media-story-text { flex: 1 1 auto; min-height: 0; }
+.s-media-story.is-expanded .media-story-col { max-width: 35.375em; }        /* 534 text + 24 gap + 8 bar */
+.s-media-story.is-expanded [data-story="more"] { display: none; }
+.s-media-story.is-expanded .media-story-scroll {
+  flex: 1 1 auto;
+  max-height: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 2em;                                                       /* 24px gap + 8px bar */
+  scrollbar-width: thin;                                                    /* Firefox */
+  scrollbar-color: rgba(217, 217, 217, 0.5) transparent;
+}
+.s-media-story.is-expanded .media-story-scroll::-webkit-scrollbar { width: 0.5em; }
+.s-media-story.is-expanded .media-story-scroll::-webkit-scrollbar-track { background: transparent; }
+.s-media-story.is-expanded .media-story-scroll::-webkit-scrollbar-thumb {
+  background: rgba(217, 217, 217, 0.5);                                     /* Figma #D9D9D9 @ 50% */
+  border-radius: 1.875em;                                                   /* 30px */
+}
+.s-media-story.is-expanded .media-story-scroll:focus-visible { outline: 1px solid rgba(255,255,255,0.6); outline-offset: 0.5em; }
+
+/* Scroll edge fades — only on the edge that has hidden text.
+   media-story.ts sets data-fade-top / data-fade-bottom from scroll position;
+   @property lets the fade depth transition instead of snapping. */
+@property --story-fade-top    { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --story-fade-bottom { syntax: "<length>"; inherits: false; initial-value: 0px; }
+
+.s-media-story.is-expanded .media-story-scroll {
+  --story-fade: 3.75em;                                                     /* 2 lines of 30px Body L */
+  --story-bar: 0.5em;                                                       /* keep the scrollbar out of the mask */
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent 0, #000 var(--story-fade-top), #000 calc(100% - var(--story-fade-bottom)), transparent 100%),
+    linear-gradient(#000, #000);
+          mask-image:
+    linear-gradient(to bottom, transparent 0, #000 var(--story-fade-top), #000 calc(100% - var(--story-fade-bottom)), transparent 100%),
+    linear-gradient(#000, #000);
+  -webkit-mask-size: calc(100% - var(--story-bar)) 100%, var(--story-bar) 100%;
+          mask-size: calc(100% - var(--story-bar)) 100%, var(--story-bar) 100%;
+  -webkit-mask-position: left top, right top;
+          mask-position: left top, right top;
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  transition: --story-fade-top 0.3s ease, --story-fade-bottom 0.3s ease;
+}
+.s-media-story.is-expanded .media-story-scroll[data-fade-top]    { --story-fade-top: var(--story-fade); }
+.s-media-story.is-expanded .media-story-scroll[data-fade-bottom] { --story-fade-bottom: var(--story-fade); }
+@media (prefers-reduced-motion: reduce) {
+  .s-media-story.is-expanded .media-story-scroll { transition: none; }
+}
+
 .link-underline {
   position: relative;
 }

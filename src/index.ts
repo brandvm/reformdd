@@ -10,6 +10,7 @@ import { initVideoLibrary } from './modules/video-library';
 import { initGlow } from './modules/glow';
 import { initFeatureTabs } from './modules/feature-tabs';
 import { initAccordion } from './modules/accordion';
+import { initMediaStory } from './modules/media-story';
 import { initEnvironmentSwitcher } from './modules/environment-switcher';
 
 // Release the pre-paint scroll lock set by the head bootstrap (loader.html).
@@ -74,6 +75,10 @@ run('feature tabs', initFeatureTabs);
 // Benefits accordion on the Sweat page — one row open at a time. No-ops on
 // any page without a data-acc root.
 run('accordion', initAccordion);
+
+// S | Media Story, Story variant: "Read More" expands the copy in place into a
+// scroll column. No-ops on variants without a data-story="more" link.
+run('media story', () => initMediaStory());
 
 // Internal tool: prints each background video's CDN URL on /design/video-library
 // so it can be copied for use elsewhere. No-ops on every other page.
