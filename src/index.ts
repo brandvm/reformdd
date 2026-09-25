@@ -11,6 +11,7 @@ import { initGlow } from './modules/glow';
 import { initFeatureTabs } from './modules/feature-tabs';
 import { initAccordion } from './modules/accordion';
 import { initMediaStory } from './modules/media-story';
+import { initBenefitsModals } from './modules/benefits-modal';
 import { initEnvironmentSwitcher } from './modules/environment-switcher';
 
 // Release the pre-paint scroll lock set by the head bootstrap (loader.html).
@@ -79,6 +80,12 @@ run('accordion', initAccordion);
 // S | Media Story, Story variant: "Read More" expands the copy in place into a
 // scroll column. No-ops on variants without a data-story="more" link.
 run('media story', () => initMediaStory());
+
+// Explore Benefits popup on the Recover Suite Cards. Locks the scroll with the
+// .is-modal-open class while a modal is open, and each modal is portalled to
+// <body> on init so the card's overflow cannot clip it. No-ops on any page
+// without a data-benefits card.
+run('benefits modal', initBenefitsModals);
 
 // Internal tool: prints each background video's CDN URL on /design/video-library
 // so it can be copied for use elsewhere. No-ops on every other page.

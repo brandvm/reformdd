@@ -397,6 +397,14 @@ html.nav-open {
   overflow: hidden;
 }
 
+/* src/modules/benefits-modal.ts sets this while a Benefits Modal is open, and
+   it is the whole lock: unlike the nav, the module does not take the Lenis
+   instance, so nothing here defers to .lenis-stopped. Same reasoning as
+   .nav-open above for why it is <html> only and never <body>. */
+html.is-modal-open {
+  overflow: hidden;
+}
+
 /* ============================================================
    05. COMPONENTS & MOTION
    ============================================================ */
@@ -1048,6 +1056,31 @@ html.nav-open {
   }
 }
 
+/* Benefits Modal. Webflow owns the panel's layout and type; these are the two
+   things its style panel cannot say.
+
+   overscroll-behavior on the panel keeps a flick past the end of a long
+   benefits list from chaining into the page behind the modal, which is locked
+   and would otherwise sit there absorbing the gesture.
+
+   The closed default is scoped two ways, and both are load-bearing. Inside the
+   card, because benefits-modal.ts portals the modal to <body> on init and owns
+   its visibility from there — so on the live site this only bites for the frame
+   before the bundle boots, long enough to keep an instance left on the
+   Designer's "Popup Open" variant from flashing open. And live-site only, via
+   the .wf-design-mode class Webflow puts on <html> on the canvas: no custom
+   code runs there, so without the exemption nothing would ever unhide the
+   modal and the preview variant could not be opened or edited at all — which
+   holds however this sheet reaches the Designer, Embed or global styles
+   component. */
+.benefits-modal-panel {
+  overscroll-behavior: contain;
+}
+
+html:not(.wf-design-mode) [data-benefits="card"] [data-benefits="modal"] {
+  display: none !important;
+}
+
 /* ============================================================
    06. UTILITIES
    ============================================================ */
@@ -1223,6 +1256,13 @@ html.nav-open {
 [data-acc="trigger"]:focus-visible {
   outline: 2px solid var(--_colors---brand--green);
   outline-offset: -2px;
+}
+
+/* The close button sits on the panel's dark fill, where the accent ring above
+   has too little contrast to find; white is what reads against it. */
+[data-benefits="close"]:focus-visible {
+  outline: 1px solid #fff;
+  outline-offset: 4px;
 }
 
 @media (prefers-reduced-motion: reduce) {
