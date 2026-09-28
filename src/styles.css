@@ -288,9 +288,9 @@ svg {
   overflow: visible;
 }
 
-.w-dropdown-toggle {
+/* .w-dropdown-toggle {
   padding: 0;
-}
+} */
 
 .w-background-video > video {
   object-fit: cover;
