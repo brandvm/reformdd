@@ -12,6 +12,7 @@ import { initFeatureTabs } from './modules/feature-tabs';
 import { initAccordion } from './modules/accordion';
 import { initMediaStory } from './modules/media-story';
 import { initBenefitsModals } from './modules/benefits-modal';
+import { initFaq } from './modules/faq';
 import { initEnvironmentSwitcher } from './modules/environment-switcher';
 
 // Release the pre-paint scroll lock set by the head bootstrap (loader.html).
@@ -86,6 +87,11 @@ run('media story', () => initMediaStory());
 // <body> on init so the card's overflow cannot clip it. No-ops on any page
 // without a data-benefits card.
 run('benefits modal', initBenefitsModals);
+
+// FAQs page sticky nav. An IntersectionObserver marks the link whose group is
+// in the reading band, so it has nothing to unsubscribe and no scroll handler
+// to share with Lenis. No-ops on any page without a .faq-nav-link.
+run('faq', () => initFaq());
 
 // Internal tool: prints each background video's CDN URL on /design/video-library
 // so it can be copied for use elsewhere. No-ops on every other page.
