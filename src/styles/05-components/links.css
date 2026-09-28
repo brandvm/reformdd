@@ -1,0 +1,72 @@
+.link-underline {
+  position: relative;
+}
+
+.link-underline::after {
+  content: "";
+  position: absolute;
+  top: var(--underline-top);
+  left: 0%;
+  height: var(--underline-height);
+  width: 0%;
+  background: currentColor;
+  transition: width var(--dur-bbs) var(--ease-bbs);
+}
+
+.link-underline:hover::after {
+  width: 100%;
+}
+
+.link-underline:not(:hover)::after {
+  left: auto;
+  right: 0%;
+  width: 0%;
+}
+
+/* Real text-decoration, not a pseudo-element: this is the variant for
+   links inside a paragraph, and an absolutely-positioned ::after cannot
+   follow one across a line break — it would draw a single bar over the
+   whole inline box. Decoration wraps per line fragment for free, and
+   inherits the skip-ink / thickness / offset set globally in 02 BASE.
+
+   The 0-1-0 class beats `a { text-decoration: none }` in 02 BASE.
+   First color declaration is the fallback where color-mix is missing:
+   a full-strength underline rather than none at all.
+
+   Prose links are deliberately NOT part of this rule — see the full-strength
+   treatment in the prose block below. Long-form legal text is read, not
+   scanned, and a half-strength underline is too quiet to find in a wall of
+   it; the reference underlines prose links outright. */
+.inline-link-underline {
+  text-decoration-line: underline;
+  text-decoration-color: currentColor;
+  text-decoration-color: color-mix(
+    in srgb,
+    currentColor calc(var(--inline-underline-opacity) * 100%),
+    transparent
+  );
+  transition: text-decoration-color var(--dur-bbs) var(--ease-bbs);
+}
+
+.inline-link-underline:hover {
+  text-decoration-color: currentColor;
+}
+
+/* Button link — the icon nudges forward on hover. The transition sits on
+   the icon rather than on the :hover rule so it eases back out when the
+   pointer leaves, not just on the way in. */
+.button-link .icon {
+  transition: transform var(--dur-bbs) var(--ease-bbs);
+}
+
+.button-link:hover .icon {
+  transform: translateX(var(--button-icon-shift));
+}
+
+.image-w img {
+  transition: transform var(--dur-bbs) var(--ease-bbs);
+}
+
+.image-w:hover img {
+  transform: scale(var(--image-zoom-scale));
+}

@@ -1,0 +1,24 @@
+/* Benefits Modal. Webflow owns the panel's layout and type; these are the two
+   things its style panel cannot say.
+
+   overscroll-behavior on the panel keeps a flick past the end of a long
+   benefits list from chaining into the page behind the modal, which is locked
+   and would otherwise sit there absorbing the gesture.
+
+   The closed default is scoped two ways, and both are load-bearing. Inside the
+   card, because benefits-modal.ts portals the modal to <body> on init and owns
+   its visibility from there — so on the live site this only bites for the frame
+   before the bundle boots, long enough to keep an instance left on the
+   Designer's "Popup Open" variant from flashing open. And live-site only, via
+   the .wf-design-mode class Webflow puts on <html> on the canvas: no custom
+   code runs there, so without the exemption nothing would ever unhide the
+   modal and the preview variant could not be opened or edited at all — which
+   holds however this sheet reaches the Designer, Embed or global styles
+   component. */
+.benefits-modal-panel {
+  overscroll-behavior: contain;
+}
+
+html:not(.wf-design-mode) [data-benefits="card"] [data-benefits="modal"] {
+  display: none !important;
+}

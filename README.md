@@ -166,7 +166,9 @@ tag, so a staging deploy never touches the live site.
 ```
 src/
   index.ts            entry point; a manifest of module imports and calls
-  styles.css          the whole stylesheet, in numbered sections
+  styles.css          CSS manifest; cascade notes and the @import order
+  styles/             one file per numbered section, 01-tokens .. 08-editor
+    05-components/    one file per component, ordered by its _index.css
   modules/            one file per feature, each exporting an init function
   globals.d.ts        types for the globals the loader and Webflow set
 tests/                Playwright checks; browser-level, no server needed
@@ -174,9 +176,11 @@ build.mjs             esbuild config and dev server
 loader.html           the three Webflow snippets, documented
 ```
 
-`src/styles.css` opens with cascade notes and a numbered table of contents.
-Section order is the tiebreaker for same-specificity rules — add to the
-section a rule belongs to, never to the end of the file.
+`src/styles.css` holds no rules: it is the cascade notes plus the @import
+list that esbuild inlines into one sheet, so that list is where section order
+is written down. Order is the tiebreaker for same-specificity rules — add to
+the file whose section a rule belongs to, and within §05 to the component's
+own file, never to whichever file is already open.
 
 TypeScript runs `strict`, targets ES2019, and defines no path aliases —
 imports are relative.

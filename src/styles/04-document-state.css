@@ -1,0 +1,58 @@
+/* ============================================================
+   04. DOCUMENT STATE
+   ============================================================ */
+
+/* Runtime classes on <html>, set outside this sheet: the head bootstrap
+   in loader.html adds .is-loading before first paint, src/index.ts drops
+   it once the bundle boots (the head timeout is the fallback if the bundle
+   cannot load), and Lenis owns the rest. Grouped here so the whole boot
+   handshake reads in one place.
+
+   Under prefers-reduced-motion there is no Lenis instance, so no .lenis
+   class lands and every rule below sits out — the page scrolls natively. */
+
+html.is-loading,
+html.is-loading body {
+  overflow: hidden;
+  height: 100%;
+}
+
+html.lenis {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+/* allowNestedScroll covers nested scrollers automatically; this stays for
+   the explicit opt-out attribute, which still works alongside it. */
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* Lenis sets this while stopped — scroll locks, open menus, modals. */
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* src/modules/nav.ts sets this while the menu panel is open, and only when
+   there is no Lenis instance to own the lock — i.e. prefers-reduced-motion.
+   Whenever Lenis exists, .lenis-stopped above is the lock and this must stay
+   off; two locks are worse than one.
+
+   <html> only, never <body>: overflow:hidden on the body makes it establish
+   a block formatting context, and the browser re-clamps the document scroll
+   position when it does — which yanks the page the instant the menu opens
+   from anywhere but the very top. */
+html.nav-open {
+  overflow: hidden;
+}
+
+/* src/modules/benefits-modal.ts sets this while a Benefits Modal is open, and
+   it is the whole lock: unlike the nav, the module does not take the Lenis
+   instance, so nothing here defers to .lenis-stopped. Same reasoning as
+   .nav-open above for why it is <html> only and never <body>. */
+html.is-modal-open {
+  overflow: hidden;
+}

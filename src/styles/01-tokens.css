@@ -1,0 +1,87 @@
+/* ============================================================
+   01. TOKENS
+   ============================================================ */
+
+:root {
+  /* Fluid scale — sets the root font-size so every rem value coming out
+     of the Designer scales with the viewport. Ideal = the width the
+     design was built at. These starting widths come from the reference;
+     tune them when the Reformd design is established. */
+  --size-unit: 16;
+  --size-container-ideal: 1680;
+  --size-container-min: 991px;
+  --size-container-max: 1920px;
+
+  --size-container: clamp(
+    var(--size-container-min),
+    100vw,
+    var(--size-container-max)
+  );
+  --size-font: calc(
+    var(--size-container) / (var(--size-container-ideal) / var(--size-unit))
+  );
+
+  font-size: var(--size-font);
+
+  /* Colour — wire these to the Webflow variables once the palette is in
+     the Designer (`var(--_colors--accent, …)`). Until then they inherit,
+     so nothing renders wrong. */
+  --color-accent: currentColor;
+
+  /* Motion */
+  --ease-bbs: cubic-bezier(0.64, 0.05, 0, 1);
+  --dur-bbs: 800ms;
+
+  /* Clearance for the fixed header, used by the anchor offset in §06.
+     The condensed height, not the full one: any in-page anchor is reached
+     by scrolling, and by the time you arrive the bar has already shrunk.
+     Tracks the Designer variable so tuning Nav/Height Scrolled moves the
+     anchor landing with it. */
+  --nav-h: var(--_layout---nav--height-scrolled, 4.5em);
+
+  /* Underline effect */
+  --underline-top: 95%;
+  --underline-height: 1px;
+  --inline-underline-opacity: 0.48;
+
+  /* Loops */
+  --loop-x-duration: 60s;
+  --loop-y-duration: 32s;
+
+  /* SVG dash */
+  --svg-dash-duration: 8s;
+  --svg-dash-offset: 600;
+
+  /* Button icon */
+  --button-icon-shift: 0.25em;
+
+  /* Zoom */
+  --image-zoom-scale: 1.12;
+}
+
+/* Tablet */
+@media screen and (max-width: 991px) {
+  :root {
+    --size-container-ideal: 834;
+    --size-container-min: 768px;
+    --size-container-max: 991px;
+  }
+}
+
+/* Mobile landscape */
+@media screen and (max-width: 767px) {
+  :root {
+    --size-container-ideal: 430;
+    --size-container-min: 480px;
+    --size-container-max: 767px;
+  }
+}
+
+/* Mobile portrait */
+@media screen and (max-width: 479px) {
+  :root {
+    --size-container-ideal: 430;
+    --size-container-min: 320px;
+    --size-container-max: 428px;
+  }
+}

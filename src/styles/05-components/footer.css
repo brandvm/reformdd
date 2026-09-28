@@ -1,0 +1,11 @@
+/* Footer link-column accordions. Closed state is applied only once
+   src/modules/footer.ts has marked the footer as its own — without that
+   guard a bundle that failed to load would leave the footer links
+   permanently sealed shut on mobile, which is worse than showing them all.
+   The overflow clip is what the GSAP height tween animates against. */
+@media screen and (max-width: 767px) {
+  [data-footer-ready] [data-footer="panel"] {
+    height: 0;
+    overflow: hidden;
+  }
+}

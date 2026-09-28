@@ -1,0 +1,149 @@
+/* Navbar panel and its scrim — the closed state, so the menu is not briefly
+   visible, its links are not tabbable, and the overlay cannot swallow clicks
+   before the bundle boots. nav.ts clears the panel's inline visibility on
+   open and restores it on the timeline's reverse; the overlay rides GSAP's
+   autoAlpha, which writes visibility:inherit over this.
+   Attribute selectors, not the Designer classes, for the same reason nav.ts
+   hooks on them: renaming a class must not unhide either one. */
+[data-nav="panel"],
+[data-nav="overlay"] {
+  visibility: hidden;
+}
+
+/* Navbar condensed state. nav.ts puts data-nav-scrolled on the root once the
+   page is past the threshold, and data-nav-open while the menu is open. Open
+   wins: the panel's top padding is designed against the FULL bar height, so
+   opening the menu restores it rather than leaving the links floating below
+   a shrunken bar. It also keeps the scrolled background and rule off the bar
+   while the panel is behind it, where a border would draw a line across the
+   middle of an open menu.
+
+   Descendant selectors because a Webflow combo class can only style the
+   element it sits on, and this state has to reach the bar and the logo from
+   a flag on their shared ancestor — exactly the "JS-paired styles Webflow
+   classes cannot express" case in the cascade notes. Every value is still a
+   Designer variable, so the sizes stay tunable without touching this file. */
+[data-nav-part="bar"] {
+  background-color: transparent;
+  border-bottom: var(--_spacing---hairline) solid transparent;
+  transition:
+    height 320ms var(--ease-bbs),
+    background-color 320ms var(--ease-bbs),
+    border-bottom-color 320ms var(--ease-bbs);
+}
+
+/* Width, not transform, so the mark is re-rendered from the vector at every
+   size instead of being rasterised once and scaled — that is what makes an
+   inline SVG go soft on mobile. */
+[data-nav-part="logo"] {
+  transition: width 320ms var(--ease-bbs);
+}
+
+/* The button and burger shrink by transform: they are a text label and three
+   plain rectangles, so there is no vector detail to lose, and transform is
+   the cheap property to animate. Anchored to their own gutter edge so both
+   stay flush while they scale. No will-change: the compositor layer lasts
+   only as long as the transition, and the text re-rasterises crisply at rest. */
+[data-nav-part="toggle-icon"] {
+  transform-origin: left center;
+  transition: transform 320ms var(--ease-bbs);
+}
+
+[data-nav-part="actions"] {
+  transform-origin: right center;
+  transition: transform 320ms var(--ease-bbs);
+}
+
+/* SIZE — applies whenever scrolled, open or not.
+   The bar must not resize when the menu opens. It used to, and the growth
+   was visible through the panel wipe: the bar sits above the panel, so a
+   72→116px animation read as the header inflating behind the menu.
+   The -scrolled variables carry literal fallbacks because an undefined var()
+   is invalid-at-computed-value-time, which resolves `height` to auto and
+   collapses the bar rather than doing nothing — that would matter if this
+   bundle ever shipped ahead of the Webflow publish that defines them. Keep
+   the fallbacks in step with Nav/Height Scrolled and Nav/Logo Width Scrolled. */
+[data-nav-scrolled] [data-nav-part="bar"] {
+  height: var(--_layout---nav--height-scrolled, 4.5em);
+}
+
+[data-nav-scrolled] [data-nav-part="logo"] {
+  width: var(--_layout---nav--logo-width-scrolled, 10em);
+}
+
+[data-nav-scrolled] [data-nav-part="toggle-icon"],
+[data-nav-scrolled] [data-nav-part="actions"] {
+  transform: scale(0.875);
+}
+
+/* Hold the gap between the bottom of the bar and the first row of menu
+   content constant by tracking however much the bar shrank, rather than
+   hard-coding a second padding that would drift the moment either height is
+   tuned. Nav/Panel Padding T is measured from the top of the panel, which
+   sits behind the bar — so the visible gap is that padding minus the bar
+   height, and subtracting the shrink here is what keeps it steady. */
+[data-nav-scrolled] [data-nav="panel"] {
+  padding-top: calc(
+    var(--_layout---nav--panel-padding-t) -
+      (
+        var(--_layout---nav--height) -
+          var(--_layout---nav--height-scrolled, 4.5em)
+      )
+  );
+}
+
+/* CHROME — only while the menu is closed. A bottom rule on the bar would
+   otherwise draw a line straight across the middle of the open panel, and
+   the bar's own background would sit on top of the panel's. */
+[data-nav-scrolled]:not([data-nav-open]) [data-nav-part="bar"] {
+  background-color: var(--_colors-semantic---background--page);
+  border-bottom-color: var(--_colors-semantic---border--subtle);
+}
+
+/* The panel is a sheet on tablet and phone, and it has to be able to scroll
+   itself. Opening the menu stops Lenis, so the page behind is locked and the
+   panel is the only thing left that could move — anything it pushes past the
+   fold is simply unreachable. That is what cut the second nav tile in half
+   and put the Contact button off-screen entirely.
+
+   Setting overflow alone does not fix it, which is the trap here: the open
+   animation in nav.ts tweens height to `auto` and leaves it there, so the box
+   grows to fit its content and never has anything to overflow. A ceiling is
+   what turns it into a scroller. min-height cannot do that job — it is a
+   floor, and raising it only makes a short menu taller.
+
+   max-height is also the ceiling that does not fight the height tween: GSAP
+   measures the clamped height when it resolves `auto`, so the open still
+   animates to the right size instead of overshooting and snapping back.
+
+   dvh, not vh: on mobile vh is the tallest the viewport ever gets, so a 100vh
+   sheet parks its last screenful underneath the browser chrome — the very
+   content the cap exists to reveal.
+
+   Only the y axis. overflow-x stays hidden from the Designer class, which is
+   what clips the content during the height wipe. */
+@media (max-width: 991px) {
+  [data-nav="panel"] {
+    max-height: 100dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* Give the bar something to hide the scrolled content behind. It already
+     paints above the panel, but it is transparent while the menu is open —
+     harmless as long as nothing moved underneath it, and wrong the moment
+     the panel above could scroll: the links rode up through the logo and
+     the close button.
+
+     The panel's own page colour, so this reads as the links disappearing
+     under the bar rather than as a second surface appearing on top of the
+     first. Scoped to the breakpoints where the panel scrolls, because the
+     desktop panel is a fixed band that never moves under the bar.
+
+     Background only. The border that would separate the two is the same one
+     the rule below keeps off an open menu, where it drew a line across the
+     middle of the panel. */
+  [data-nav-open] [data-nav-part="bar"] {
+    background-color: var(--_colors-semantic---background--page);
+  }
+}

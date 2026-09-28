@@ -1,0 +1,16 @@
+/* Benefits accordion (src/modules/accordion.ts). Panels start closed so
+   the rows don't flash open before the script runs; the script owns the
+   height from then on. The triggers are Webflow Link elements the script
+   turns into role="button", so the cursor is set here, not by the tag. */
+[data-acc="panel"] {
+  height: 0;
+  overflow: hidden;
+}
+
+[data-acc="trigger"] {
+  cursor: pointer;
+}
+
+[data-acc="trigger"]:hover [data-acc="icon"] {
+  opacity: 0.7;
+}

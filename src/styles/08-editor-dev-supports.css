@@ -1,0 +1,62 @@
+/* ============================================================
+   08. EDITOR & DEV SUPPORTS
+   ============================================================ */
+
+/* Optional class for code-only embeds that should occupy no layout space. */
+.g-embed-code {
+  display: none !important;
+}
+
+/* Video library (/design/video-library). The URL row is built by
+   src/modules/video-library.ts, so it has no Designer class to style and is
+   dressed here. Internal tooling, hence §08 rather than a component section. */
+.video-url {
+  display: flex;
+  align-items: stretch;
+  gap: var(--_spacing---8);
+}
+
+.video-url input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: var(--_spacing---8) var(--_spacing---10);
+  border: var(--_spacing---hairline) solid
+    var(--_colors-semantic---border--default);
+  background: transparent;
+  color: var(--_colors-semantic---text--secondary);
+  font-family: var(--_typography-scale---family--body);
+  font-size: var(--_typography-role---size--caption);
+  /* The URLs are long and uniform; clipping beats wrapping the card. */
+  text-overflow: ellipsis;
+}
+
+.video-url button {
+  flex: 0 0 auto;
+  padding: var(--_spacing---8) var(--_spacing---12);
+  border: var(--_spacing---hairline) solid
+    var(--_colors-semantic---border--default);
+  background: transparent;
+  color: var(--_colors-semantic---text--primary);
+  font-family: var(--_typography-scale---family--heading);
+  font-size: var(--_typography-role---size--caption);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 200ms, color 200ms;
+}
+
+.video-url button:hover {
+  border-color: var(--_colors-semantic---border--strong);
+}
+
+/* The nav panel is hidden until JS opens it (§05). No JS runs on the canvas,
+   so without this the panel would be uneditable in the Designer. */
+.w-editor [data-nav="panel"] {
+  visibility: visible !important;
+}
+
+/* Keep future JS-driven entrance animations visible in the Editor. */
+.w-editor [data-anim] {
+  visibility: visible !important;
+  opacity: 1 !important;
+  transform: none !important;
+}

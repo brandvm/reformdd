@@ -16,7 +16,9 @@ instance on each page. Record installed snippet changes in `loader.html`.
 
 Feature modules belong in `src/modules/`; `src/index.ts` is the entry-point
 manifest. Each module must no-op when its target markup is absent. Follow
-the numbered sections and cascade notes in `src/styles.css`.
+the cascade notes in `src/styles.css`, which is an @import manifest only —
+rules live in `src/styles/` (one file per numbered section, components one
+file each under `05-components/`).
 
 Use the pinned pnpm version and Node 22 (`.nvmrc`). Run `pnpm check` and
 `pnpm build` before shipping. `dist/` is ignored except in release commits.

@@ -1,0 +1,92 @@
+/* ============================================================
+   03. WEBFLOW NEUTRALIZERS
+   ============================================================ */
+
+/* Clearfix pseudos. Webflow puts ::before/::after on most wrappers;
+   inside a flex or grid parent they become phantom items and eat gap. */
+.w-container::before,
+.w-container::after,
+.w-row::before,
+.w-row::after,
+.w-clearfix::before,
+.w-clearfix::after,
+.w-form::before,
+.w-form::after,
+.w-richtext::before,
+.w-richtext::after,
+.w-checkbox::before,
+.w-checkbox::after,
+.w-radio::before,
+.w-radio::after,
+.w-tab-content::before,
+.w-tab-content::after,
+.w-tab-pane::before,
+.w-tab-pane::after,
+.w-layout-blockcontainer::before,
+.w-layout-blockcontainer::after {
+  display: none;
+}
+
+/* Forms — Webflow hardcodes a #3898ec focus ring. The form :focus-visible
+   rules in §07 restore the outline that Webflow's :focus rule removes. */
+.w-input,
+.w-select {
+  font: inherit;
+  color: inherit;
+}
+
+.w-input:focus,
+.w-select:focus {
+  border-color: currentColor;
+}
+
+/* Components. Only the defaults that are always in the way — navbar
+   internals are left alone deliberately, since Webflow's floats are
+   load-bearing for the built-in nav. */
+.w-nav {
+  background-color: transparent;
+}
+
+.w-background-video > video {
+  object-fit: cover;
+}
+
+/* Rich text */
+.w-richtext > :first-child,
+.w-richtext div:first-child > :first-child {
+  margin-top: 0;
+}
+
+.w-richtext > :last-child,
+.w-richtext div:first-child > :last-child {
+  margin-bottom: 0;
+}
+
+.w-richtext ul,
+.w-richtext ol {
+  padding-left: 1.25em; /* restore the indent §02 stripped */
+}
+
+.w-richtext figure {
+  margin: 0;
+}
+
+/* Image figures only — the same padding-bottom on a video figure IS the
+   aspect ratio for its absolutely-positioned iframe. */
+.w-richtext figure.w-richtext-figure-type-image > div {
+  padding-bottom: 0 !important;
+}
+
+.w-richtext figure img {
+  width: 100%;
+}
+
+.w-embed {
+  margin-bottom: 0;
+}
+
+/* Opt-in: put display:contents on an Embed so its children join the
+   parent's flex/grid. Add `data-embed="contents"` in element settings. */
+[data-embed="contents"] {
+  display: contents;
+}

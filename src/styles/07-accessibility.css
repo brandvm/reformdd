@@ -1,0 +1,55 @@
+/* ============================================================
+   07. ACCESSIBILITY
+   ============================================================ */
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Match Webflow's .w-input:focus and .w-select:focus specificity so
+   keyboard focus stays visible on form controls. */
+:focus-visible,
+.w-input:focus-visible,
+.w-select:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Accordion rows draw their ring inside the row, since a 2px offset would
+   collide with the hairline of the row above. */
+[data-acc="trigger"]:focus-visible {
+  outline: 2px solid var(--_colors---brand--green);
+  outline-offset: -2px;
+}
+
+/* The close button sits on the panel's dark fill, where the accent ring above
+   has too little contrast to find; white is what reads against it. */
+[data-benefits="close"]:focus-visible {
+  outline: 1px solid #fff;
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loop-animate-x,
+  .loop-animate-y,
+  .svg-animate-line {
+    animation: none !important;
+  }
+
+  .image-w img,
+  .button-link .icon,
+  .link-underline::after,
+  .inline-link-underline,
+  .content-rte a,
+  [data-nav-part="bar"],
+  [data-nav-part="logo"],
+  [data-nav-part="toggle-icon"],
+  [data-nav-part="actions"] {
+    transition: none !important;
+  }
+
+  .image-w:hover img,
+  .button-link:hover .icon {
+    transform: none;
+  }
+}

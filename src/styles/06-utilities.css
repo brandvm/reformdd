@@ -1,0 +1,152 @@
+/* ============================================================
+   06. UTILITIES
+   ============================================================ */
+
+/* Anchor offset for the fixed header */
+:where([id]) {
+  scroll-margin-top: var(--nav-h);
+}
+
+/* Opt-in scrollbar hiding — per element, never global */
+[scroll-show="false"] {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+[scroll-show="false"]::-webkit-scrollbar {
+  display: none;
+}
+
+/* Line clamp */
+[data-truncate] {
+  --truncate-lines: 1;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--truncate-lines);
+  line-clamp: var(--truncate-lines);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}
+
+[data-truncate="1"] {
+  --truncate-lines: 1;
+}
+
+[data-truncate="2"] {
+  --truncate-lines: 2;
+}
+
+[data-truncate="3"] {
+  --truncate-lines: 3;
+}
+
+/* Read more — opt in only with a JS toggle that flips .is-expanded
+   and updates the toggle control's aria-expanded state. */
+[data-readmore="text"] {
+  --readmore-lines: 2;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--readmore-lines);
+  line-clamp: var(--readmore-lines);
+  overflow: hidden;
+}
+
+[data-readmore="text"].is-expanded {
+  display: block;
+  -webkit-line-clamp: unset;
+  line-clamp: none;
+}
+
+[data-readmore="text"] > :first-child {
+  margin-top: 0;
+}
+
+[data-readmore="text"] > :last-child {
+  margin-bottom: 0;
+}
+
+[data-readmore="toggle"] {
+  cursor: pointer;
+}
+
+/* Figma width passthrough — set --figma-size to the raw design pixel
+   number. rem keeps the conversion tied to the root scale even inside
+   components with a different font-size. */
+[style*="--figma-size"] {
+  max-width: calc(1rem * var(--figma-size) / var(--size-unit));
+}
+
+/* Gradient fills */
+[data-gradient-text] {
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-repeat: repeat-x;
+  -webkit-text-fill-color: transparent;
+  color: inherit;
+}
+
+/* Edge fade masks — set --mask-*-size to tune a single edge */
+.mask-top,
+.mask-bottom,
+.mask-left,
+.mask-right {
+  --mask-fade: 14%;
+
+  -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      #000 var(--mask-t, 0%),
+      #000 calc(100% - var(--mask-b, 0%)),
+      transparent 100%
+    ),
+    linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--mask-l, 0%),
+      #000 calc(100% - var(--mask-r, 0%)),
+      transparent 100%
+    );
+  mask-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      #000 var(--mask-t, 0%),
+      #000 calc(100% - var(--mask-b, 0%)),
+      transparent 100%
+    ),
+    linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--mask-l, 0%),
+      #000 calc(100% - var(--mask-r, 0%)),
+      transparent 100%
+    );
+
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+.mask-top {
+  --mask-t: var(--mask-top-size, var(--mask-fade));
+}
+
+.mask-bottom {
+  --mask-b: var(--mask-bottom-size, var(--mask-fade));
+}
+
+.mask-left {
+  --mask-l: var(--mask-left-size, var(--mask-fade));
+}
+
+.mask-right {
+  --mask-r: var(--mask-right-size, var(--mask-fade));
+}
+
+/* Selection */
+@supports (background-color: color-mix(in srgb, black 10%, transparent)) {
+  ::selection {
+    background-color: color-mix(in srgb, currentColor 12%, transparent);
+    color: var(--color-accent);
+    text-shadow: none;
+  }
+}
