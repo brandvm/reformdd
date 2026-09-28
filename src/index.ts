@@ -13,6 +13,7 @@ import { initAccordion } from './modules/accordion';
 import { initMediaStory } from './modules/media-story';
 import { initBenefitsModals } from './modules/benefits-modal';
 import { initFaq } from './modules/faq';
+import { initPricing } from './modules/pricing';
 import { initEnvironmentSwitcher } from './modules/environment-switcher';
 
 // Release the pre-paint scroll lock set by the head bootstrap (loader.html).
@@ -92,6 +93,11 @@ run('benefits modal', initBenefitsModals);
 // in the reading band, so it has nothing to unsubscribe and no scroll handler
 // to share with Lenis. No-ops on any page without a .faq-nav-link.
 run('faq', () => initFaq());
+
+// Pricing Card "Benefits +" toggle. Adds .is-pricing-ready to <html> before
+// collapsing anything, so a failure here leaves the benefits readable rather
+// than hidden. No-ops on any page without a data-pricing block.
+run('pricing', () => initPricing());
 
 // Internal tool: prints each background video's CDN URL on /design/video-library
 // so it can be copied for use elsewhere. No-ops on every other page.

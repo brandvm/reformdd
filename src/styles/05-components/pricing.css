@@ -1,0 +1,5 @@
+/* Pricing Card benefits toggle (src/modules/pricing.ts).
+   Panels collapse only once pricing.ts has run (.is-pricing-ready on <html>),
+   so a JS failure leaves benefits readable instead of hidden forever. */
+html.is-pricing-ready [data-pricing="panel"] { height: 0; }
+html.w-editor [data-pricing="panel"], .wf-design-mode [data-pricing="panel"] { height: auto; }
