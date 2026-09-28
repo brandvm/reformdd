@@ -218,30 +218,8 @@ svg {
   display: none;
 }
 
-/* Container ships a 940px cap and its own breakpoints; swap both for the
-   Layout token so a bare Container inherits the system width. Width
-   variants must be COMBO classes — a lone class on a Container is 0-1-0
-   and loses to this rule on source order. Fallback is `none`, so a
-   renamed collection/group/variable degrades to uncapped, not to 940. */
-.w-layout-blockcontainer {
-  max-width: var(--_layout---section--max-width, none);
-}
-
-/* Forms — Webflow hardcodes a #3898ec focus ring and grey/pink
-   success/error panels. The form :focus-visible rules in §07 restore the
-   outline that Webflow's :focus rule removes. */
-.w-form {
-  margin: 0;
-}
-
-.w-form-done,
-.w-form-fail {
-  margin: 0;
-  padding: 0;
-  background: none;
-  text-align: inherit;
-}
-
+/* Forms — Webflow hardcodes a #3898ec focus ring. The form :focus-visible
+   rules in §07 restore the outline that Webflow's :focus rule removes. */
 .w-input,
 .w-select {
   font: inherit;
@@ -253,19 +231,6 @@ svg {
   border-color: currentColor;
 }
 
-.w-checkbox,
-.w-radio {
-  display: block;
-  margin: 0;
-  padding: 0;
-}
-
-.w-checkbox-input,
-.w-radio-input {
-  float: none;
-  margin: 0;
-}
-
 /* Components. Only the defaults that are always in the way — navbar
    internals are left alone deliberately, since Webflow's floats are
    load-bearing for the built-in nav. */
@@ -273,37 +238,8 @@ svg {
   background-color: transparent;
 }
 
-.w-slider {
-  height: auto;
-  background: transparent;
-}
-
-.w-tab-link {
-  padding: 0;
-  background: none;
-}
-
-.w-tab-content,
-.w-tab-pane {
-  overflow: visible;
-}
-
-/* .w-dropdown-toggle {
-  padding: 0;
-} */
-
 .w-background-video > video {
   object-fit: cover;
-}
-
-/* CMS empty states */
-.w-dyn-empty {
-  padding: 0;
-  background: none;
-}
-
-.w-dyn-bind-empty {
-  display: none;
 }
 
 /* Rich text */
