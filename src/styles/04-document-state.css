@@ -49,10 +49,10 @@ html.nav-open {
   overflow: hidden;
 }
 
-/* src/modules/benefits-modal.ts sets this while a Benefits Modal is open, and
-   it is the whole lock: unlike the nav, the module does not take the Lenis
-   instance, so nothing here defers to .lenis-stopped. Same reasoning as
-   .nav-open above for why it is <html> only and never <body>. */
+/* src/modules/benefits-modal.ts sets this while a Benefits Modal is open, on
+   the same terms as .nav-open above: Lenis owns the lock wherever it exists
+   (.lenis-stopped), so this carries the reduced-motion case, and it is <html>
+   only, never <body>. */
 html.is-modal-open {
   overflow: hidden;
 }

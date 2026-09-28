@@ -83,11 +83,12 @@ run('accordion', initAccordion);
 // scroll column. No-ops on variants without a data-story="more" link.
 run('media story', () => initMediaStory());
 
-// Explore Benefits popup on the Recover Suite Cards. Locks the scroll with the
-// .is-modal-open class while a modal is open, and each modal is portalled to
-// <body> on init so the card's overflow cannot clip it. No-ops on any page
-// without a data-benefits card.
-run('benefits modal', initBenefitsModals);
+// Explore Benefits popup on the Recover Suite Cards. Takes Lenis so opening a
+// modal stops the scroll rather than fighting it; falls back to the
+// .is-modal-open class when Lenis is absent. Each modal is portalled to <body>
+// on init so the card's overflow cannot clip it. No-ops on any page without a
+// data-benefits card.
+run('benefits modal', () => initBenefitsModals(lenis));
 
 // FAQs page sticky nav. An IntersectionObserver marks the link whose group is
 // in the reading band, so it has nothing to unsubscribe and no scroll handler

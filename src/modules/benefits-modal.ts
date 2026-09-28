@@ -10,10 +10,11 @@
 // The "Popup Open" variant is a Designer preview only — on load every popup is forced closed.
 // The modal is portalled to <body> on init so card overflow/transform can't clip a fixed element.
 import { gsap } from "gsap";
+import type Lenis from "lenis";
 
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-export function initBenefitsModals() {
+export function initBenefitsModals(lenis?: Lenis) {
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let active: { modal: HTMLElement; trigger: HTMLElement | null; close: () => void } | null = null;
 
@@ -69,10 +70,16 @@ export function initBenefitsModals() {
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     };
 
+    // Same split as nav.ts: where Lenis exists it owns the lock outright (its
+    // own .lenis-stopped rule), and the class is the reduced-motion fallback.
+    //
+    // The instance is passed in, never read off window: Lenis sets
+    // window.lenis = { version } itself as a marker, so a `window.lenis` probe
+    // is always truthy and calling .stop() on it throws — which aborted open()
+    // after the lock and left the modal at display:none.
     const lock = (on: boolean) => {
-      document.documentElement.classList.toggle("is-modal-open", on);
-      const lenis = (window as any).lenis;
       if (lenis) on ? lenis.stop() : lenis.start();
+      else document.documentElement.classList.toggle("is-modal-open", on);
     };
 
     function open() {
