@@ -5,7 +5,7 @@ import { gsap } from 'gsap';
  *  Hooks are `data-tabs` attributes, never class names, on the same contract
  *  the Navbar and Footer use:
  *
- *    root | panel | rail | content | dots | dot
+ *    root | panel | rail | content | dots | dot | eyebrow
  *
  *  Three panels share the row. One is open and fills whatever the other two
  *  leave; the closed pair each show a rotated rail label you click to open
@@ -47,6 +47,7 @@ function setupFeatureTabs(root: HTMLElement): void {
   const rails = panels.map((p) => p.querySelector<HTMLElement>(hook('rail')));
   const contents = panels.map((p) => p.querySelector<HTMLElement>(hook('content')));
   const dots = root.querySelector<HTMLElement>(hook('dots'));
+  const eyebrow = root.querySelector<HTMLElement>(hook('eyebrow'));
   const dotList = dots
     ? Array.from(dots.querySelectorAll<HTMLElement>(hook('dot')))
     : [];
@@ -55,16 +56,21 @@ function setupFeatureTabs(root: HTMLElement): void {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 
   let active = 0;
+  // Measured in rebuild(), while every panel is at its resting width. Reading
+  // it inside setActive() would be too late: `active` has already moved, so
+  // the "closed" panel found could be the one still open mid-tween.
+  let collapsed = 0;
 
   // Marks the row as JS-owned. Until it lands, CSS keeps the first panel open
   // and every rail visible, so a failed bundle leaves three readable panels
   // rather than a row of unlabelled slivers.
   root.setAttribute('data-tabs-ready', '');
 
+  const emOf = () => parseFloat(getComputedStyle(root).fontSize) || 16;
+
   /** The closed width, read off a panel that is currently closed. Two of the
-   *  three always are, so there is no need to force a measurement pass — and
-   *  no need for this file to know that the class says 7.75em. */
-  function collapsedWidth(): number {
+   *  three always are, so there is no need to force a measurement pass. */
+  function measureCollapsed(): number {
     const closed = panels.find((_, i) => i !== active);
     return closed ? closed.getBoundingClientRect().width : 0;
   }
@@ -81,7 +87,7 @@ function setupFeatureTabs(root: HTMLElement): void {
       : 0;
     const trailing = panels.length - 1 - index;
     return (
-      root.clientWidth - collapsedWidth() * trailing - inset - dots.offsetWidth
+      root.clientWidth - collapsed * trailing - inset - dots.offsetWidth
     );
   }
 
@@ -102,12 +108,16 @@ function setupFeatureTabs(root: HTMLElement): void {
     // there is no width to tween and the rails are off — the dots have become
     // the labelled tab bar. The copy still crossfades, because all three
     // occupy the same box and a hard swap would read as a glitch.
+    const em = emOf();
+
     if (stack.matches) {
-      const em = parseFloat(getComputedStyle(root).fontSize) || 16;
       gsap.set(panels, { clearProps: 'width' });
-      gsap.set(dots, { clearProps: 'x' });
+      if (dots) gsap.set(dots, { clearProps: 'x' });
+      if (eyebrow) gsap.set(eyebrow, { clearProps: 'x' });
       for (let i = 0; i < panels.length; i++) {
-        gsap.to(contents[i], {
+        const content = contents[i];
+        if (!content) continue;
+        gsap.to(content, {
           autoAlpha: i === index ? 1 : 0,
           y: i === index ? 0 : em,
           duration: immediate ? 0 : 0.5,
@@ -118,8 +128,6 @@ function setupFeatureTabs(root: HTMLElement): void {
       return;
     }
 
-    const em = parseFloat(getComputedStyle(root).fontSize) || 16;
-    const collapsed = collapsedWidth();
     const open = root.clientWidth - collapsed * (panels.length - 1);
     const d = immediate ? 0 : undefined;
 
@@ -134,15 +142,20 @@ function setupFeatureTabs(root: HTMLElement): void {
       // autoAlpha, not opacity: it parks the rail at visibility:hidden, which
       // also takes it out of the hit-testing and the tab order, so the open
       // panel's own rail cannot be clicked or focused behind its content.
-      gsap.to(rails[i], {
-        autoAlpha: i === index ? 0 : 1,
-        duration: d ?? RAIL_S,
-        overwrite: 'auto',
-      });
+      const rail = rails[i];
+      if (rail) {
+        gsap.to(rail, {
+          autoAlpha: i === index ? 0 : 1,
+          duration: d ?? RAIL_S,
+          overwrite: 'auto',
+        });
+      }
 
+      const content = contents[i];
+      if (!content) continue;
       if (i === index) {
         gsap.fromTo(
-          contents[i],
+          content,
           { autoAlpha: 0, y: em },
           {
             autoAlpha: 1,
@@ -156,8 +169,22 @@ function setupFeatureTabs(root: HTMLElement): void {
       } else {
         // Out at once, not crossfaded: two sets of copy dissolving through
         // each other over the same photograph reads as a rendering fault.
-        gsap.set(contents[i], { autoAlpha: 0, y: em });
+        // The kill matters on a quick double switch: this panel's delayed
+        // entry tween may not have started yet, and would fire after the set.
+        gsap.killTweensOf(content);
+        gsap.set(content, { autoAlpha: 0, y: em });
       }
+    }
+
+    // The eyebrow rides the open panel's left edge: one collapsed rail to
+    // its left per panel before it.
+    if (eyebrow) {
+      gsap.to(eyebrow, {
+        x: collapsed * index,
+        duration: d ?? PANEL_S,
+        ease: 'power4.inOut',
+        overwrite: 'auto',
+      });
     }
 
     if (dots) {
@@ -179,8 +206,11 @@ function setupFeatureTabs(root: HTMLElement): void {
   function rebuild(): void {
     // The tweens leave an inline px width behind. Clear it first so the class
     // supplies the resting width again and `collapsedWidth()` measures the
-    // stylesheet's em rather than the last viewport's pixels.
+    // stylesheet's em rather than the last viewport's pixels. A zero reading
+    // (row hidden, or stacked) falls back to the class's 7.75em.
     gsap.set(panels, { clearProps: 'width' });
+    const measured = measureCollapsed();
+    collapsed = measured > 0 ? measured : 7.75 * emOf();
     if (dots) gsap.set(dots, { left: 0, x: dotsX(active) });
     setActive(active, true);
   }
@@ -198,7 +228,9 @@ function setupFeatureTabs(root: HTMLElement): void {
     const step = event.key === 'ArrowRight' ? 1 : -1;
     const next = (active + step + panels.length) % panels.length;
     setActive(next);
-    (rails[next] ?? dotList[next])?.focus();
+    // Stacked, the rails are hidden and the dots are the tab bar.
+    const target = rails[next] && !stack.matches ? rails[next] : dotList[next];
+    target?.focus();
     event.preventDefault();
   });
 
