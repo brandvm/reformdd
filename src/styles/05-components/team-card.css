@@ -1,0 +1,21 @@
+/* Team card hover. Webflow's style panel has no hover-only media query, so a
+   :hover state set there sticks on touch after a tap — the card stays dark
+   and zoomed until something else is tapped. Gating on (hover: hover) keeps
+   the effect to pointers that can actually hover.
+
+   The transition sits outside the query on purpose: it has nothing to do on
+   a touch device, and keeping it unconditional means a hybrid device that
+   gains a mouse eases out of the zoom rather than snapping. */
+.team-card-photo {
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (hover: hover) {
+  .team-card:hover {
+    background-color: #0d0d0d;
+  }
+
+  .team-card:hover .team-card-photo {
+    transform: scale(1.04);
+  }
+}
