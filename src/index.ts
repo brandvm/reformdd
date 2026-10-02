@@ -5,6 +5,7 @@
 
 import { initSmoothScroll } from './modules/smooth-scroll';
 import { initNav } from './modules/nav';
+import { initAnchorScroll } from './modules/anchor-scroll';
 import { initFooter } from './modules/footer';
 import { initVideoLibrary } from './modules/video-library';
 import { initGlow } from './modules/glow';
@@ -62,6 +63,11 @@ try {
 // Takes Lenis so opening the menu can stop the scroll rather than fighting it
 // with overflow:hidden; falls back to the .nav-open class when Lenis is absent.
 run('nav', () => initNav(lenis));
+
+// Same-page anchor links. Replaces Webflow's click.wf-scroll, which ignores
+// scroll-margin-top and sticky bars, so the target lands below whatever is
+// pinned to the top. After the nav so its close-on-click runs first.
+run('anchor scroll', () => initAnchorScroll(lenis));
 
 // Mobile-only link-column accordions. No Lenis dependency: the panels are in
 // normal flow, so nothing here touches the scroll.

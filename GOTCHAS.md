@@ -23,6 +23,22 @@ repos to improve `brandvm/wf-template`.
 
 ## This project
 
+### 2026-10-02 · Pricing anchors landed under the sticky tab bar
+- Area: js
+- Scope: template-candidate
+- Symptom: On /pricing, "Lagree / Wellness Pricing" links scrolled the
+  heading under the sticky tab bar (130px desktop, 178px phone).
+- Cause: Webflow's `click.wf-scroll` puts the target at 0px; it offsets only
+  for a fixed header and ignores `scroll-margin-top`, so the §06 `--nav-h`
+  rule never applied to clicks.
+- Fix: `anchor-scroll.ts` unbinds `click.wf-scroll` via `Webflow.push` and
+  offsets by the larger of `scroll-margin-top` and any sticky/fixed bar
+  pinned above the target, plus 24px. Only bars that overlap the target
+  horizontally count — the FAQs sticky side nav landed groups 494px down
+  until that check was added.
+- Status: open (uncommitted)
+- Found by: human
+
 <!-- Add new entries here, newest first. -->
 
 ### 2026-09-28 · `window.lenis` is a marker, not the instance
