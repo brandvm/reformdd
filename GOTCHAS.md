@@ -36,7 +36,7 @@ repos to improve `brandvm/wf-template`.
   pinned above the target, plus 24px. Only bars that overlap the target
   horizontally count — the FAQs sticky side nav landed groups 494px down
   until that check was added.
-- Status: open (uncommitted)
+- Status: fixed 1e00c9b
 - Found by: human
 
 <!-- Add new entries here, newest first. -->
