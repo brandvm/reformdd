@@ -1,6 +1,7 @@
 // src/modules/media-story.ts
 // S | Media Story — Story variant "Read More" expand-in-place.
-// Hooks (already on the component): data-story = root | scroll | more
+// Hooks (already on the component): data-story = root | scroll | more | less
+// "less" is optional; media-story.css shows it only while expanded.
 // Collapsed: .media-story-scroll is clamped by the Story variant (max-height 20.625em, overflow hidden).
 // Expanded: root gets .is-expanded; media-story.css turns the clamp into a scroll column.
 import { gsap } from "gsap";
@@ -11,6 +12,7 @@ export function initMediaStory(scope: ParentNode = document) {
     const scroll = root.querySelector<HTMLElement>('[data-story="scroll"]');
     const link = more?.querySelector<HTMLAnchorElement>("a");
     if (!more || !scroll || !link) return; // Mission / Split / Space have no Read More
+    const less = root.querySelector<HTMLElement>('[data-story="less"]')?.querySelector<HTMLAnchorElement>("a");
 
     const col = root.querySelector<HTMLElement>(".media-story-col") ?? root;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -19,6 +21,11 @@ export function initMediaStory(scope: ParentNode = document) {
     link.setAttribute("aria-controls", scroll.id);
     link.setAttribute("aria-expanded", "false");
     link.setAttribute("role", "button");
+    if (less) {
+      less.setAttribute("aria-controls", scroll.id);
+      less.setAttribute("aria-expanded", "true");
+      less.setAttribute("role", "button");
+    }
 
     // Edge fades: flag whichever edge still has text beyond it (see media-story.css).
     let raf = 0;
@@ -44,6 +51,9 @@ export function initMediaStory(scope: ParentNode = document) {
         scroll.setAttribute("aria-label", "Full story");
       } else {
         scroll.removeAttribute("tabindex");
+        // The section shrinks back by hundreds of px; if its top is now above
+        // the viewport, bring it back rather than leaving the reader below it.
+        if (root.getBoundingClientRect().top < 0) root.scrollIntoView({ block: "start" });
       }
     };
 
@@ -58,6 +68,7 @@ export function initMediaStory(scope: ParentNode = document) {
     };
 
     link.addEventListener("click", (e) => { e.preventDefault(); toggle(true); });
+    less?.addEventListener("click", (e) => { e.preventDefault(); toggle(false); });
     root.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && root.classList.contains("is-expanded")) toggle(false);
     });

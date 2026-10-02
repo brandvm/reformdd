@@ -12,6 +12,8 @@
 .s-media-story.is-expanded .media-story-text { flex: 1 1 auto; min-height: 0; }
 .s-media-story.is-expanded .media-story-col { max-width: 35.375em; }        /* 534 text + 24 gap + 8 bar */
 .s-media-story.is-expanded [data-story="more"] { display: none; }
+/* repo-css: js-state — Read Less exists only while media-story.ts has expanded the story */
+.s-media-story:not(.is-expanded) [data-story="less"] { display: none; }
 .s-media-story.is-expanded .media-story-scroll {
   flex: 1 1 auto;
   max-height: none;
