@@ -179,6 +179,20 @@ Worked around, not fixed — do not rediscover these.
   found" instead of assuming deletion.
 - Responsive styles are only returned when breakpoints are requested
   explicitly (`include_breakpoints`).
+- `data_element_builder` creates a TextBlock as a plain Block: its
+  `set_text` is ignored and `set_text` fails on it later. Use Paragraph or
+  Heading for text (`Text Style` resets their margins).
+- Nothing can be built, moved or inserted next to a component instance,
+  and slots take only instances. Build at body level, convert with
+  `transform_element_to_component`, add it to the slot with
+  `insert_in_slot` (appends to the end), then remove the body copy.
+- A Collection List cannot live in a component. Inside a definition it
+  takes a `source` but filters, sort and field bindings fail ("No source
+  connected", "Element is not inside a CMS context"), and the Designer
+  shows a conflicting-action error. Converting a section with a bound
+  list is rejected. Keep CMS sections as plain page elements: Page W's
+  slot accepts them (S Pricing Group, the /pricing FAQ section), placed
+  via `move_element` anchored on a non-instance sibling.
 - Webflow cannot hold two combo classes with the same name on nested
   elements of one component; pick distinct names (`is-active` vs
   `is-active-dot`, dfd0338).

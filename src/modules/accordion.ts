@@ -1,6 +1,7 @@
 import { gsap } from 'gsap';
 
-/** Benefits accordion — one row open at a time. Hooks: data-acc="root|item|trigger|icon|panel". */
+/** Benefits accordion — one row open at a time. Hooks: data-acc="root|item|trigger|icon|panel",
+ *  plus optional data-acc-open on the root to start its first row open. */
 export function initAccordion(): void {
   document.querySelectorAll<HTMLElement>('[data-acc="root"]').forEach((root) => {
     const items = [...root.querySelectorAll<HTMLElement>('[data-acc="item"]')];
@@ -47,6 +48,19 @@ export function initAccordion(): void {
       openRow(i);
       open = i;
     };
+
+    // data-acc-open on the root starts its first row open (S | FAQ). It sits
+    // on the root because S | FAQ rows come from a Collection List, where
+    // one item cannot carry an attribute the others lack. Set, not tweened,
+    // so the page does not load with a row animating open.
+    if (root.hasAttribute('data-acc-open') && parts.length) {
+      const p = parts[0];
+      p.trigger.setAttribute('aria-expanded', 'true');
+      gsap.set(p.panel, { height: 'auto' });
+      if (p.icon) gsap.set(p.icon, { rotate: 180 });
+      if (p.body) gsap.set(p.body, { autoAlpha: 1, y: 0 });
+      open = 0;
+    }
 
     parts.forEach((p, i) => {
       p.trigger.addEventListener('click', (e) => { e.preventDefault(); toggle(i); });
