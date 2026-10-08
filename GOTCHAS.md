@@ -23,6 +23,20 @@ repos to improve `brandvm/wf-template`.
 
 ## This project
 
+### 2026-10-08 · Form field names set through the MCP never publish
+- Area: mcp
+- Scope: template-candidate
+- Symptom: The Join Popup form published as "Email Form" with fields
+  "Name", "Field" and "Email 2", although `set_settings` reported `name`
+  applied and `query_elements` read back "Join Popup" / "First Name".
+- Cause: The data API stores the name on the element but the publish keeps
+  the name the Designer created the form with. Placeholders cannot be set
+  at all (`placeholder` is a reserved attribute).
+- Fix: Name the form and its fields, and type placeholders, in the
+  Designer; check the published `data-name` / `name` attributes afterwards.
+- Status: open (manual step for the Join Popup)
+- Found by: claude
+
 ### 2026-10-02 · Pricing anchors landed under the sticky tab bar
 - Area: js
 - Scope: template-candidate

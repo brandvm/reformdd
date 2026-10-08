@@ -1,0 +1,9 @@
+/* Join Popup (src/modules/join-popup.ts). Webflow owns its layout, colours and
+   type; this is the one thing its style panel cannot say. */
+
+/* repo-css: designer-cant — overscroll-behavior. A flick past the end of the
+   card on a short phone screen must not chain into the page behind the
+   overlay, which is locked while the popup is open. */
+.join-popup {
+  overscroll-behavior: contain;
+}

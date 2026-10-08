@@ -193,6 +193,11 @@ Worked around, not fixed — do not rediscover these.
   list is rejected. Keep CMS sections as plain page elements: Page W's
   slot accepts them (S Pricing Group, the /pricing FAQ section), placed
   via `move_element` anchored on a non-instance sibling.
+- Form and field names set through `set_settings` (`name`) read back
+  correctly but do not publish: the site keeps the defaults ("Email Form",
+  "Name", "Field"). `placeholder` and `id` are reserved attributes (set ids
+  with `set_dom_id`). Name forms and fields and type placeholders in the
+  Designer.
 - Webflow cannot hold two combo classes with the same name on nested
   elements of one component; pick distinct names (`is-active` vs
   `is-active-dot`, dfd0338).

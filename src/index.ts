@@ -13,6 +13,7 @@ import { initFeatureTabs } from './modules/feature-tabs';
 import { initAccordion } from './modules/accordion';
 import { initMediaStory } from './modules/media-story';
 import { initBenefitsModals } from './modules/benefits-modal';
+import { initJoinPopup } from './modules/join-popup';
 import { initFaq } from './modules/faq';
 import { initPricing } from './modules/pricing';
 import { initPricingTabs } from './modules/pricing-tabs';
@@ -96,6 +97,11 @@ run('media story', () => initMediaStory());
 // on init so the card's overflow cannot clip it. No-ops on any page without a
 // data-benefits card.
 run('benefits modal', () => initBenefitsModals(lenis));
+
+// Site-wide "Let's connect" newsletter popup (Join Popup in Page W). Any link
+// to #join opens it, in the capture phase so anchor-scroll never sees the click.
+// Takes Lenis to pause the page behind it. No-ops if the component is absent.
+run('join popup', () => initJoinPopup(lenis));
 
 // FAQs page sticky nav. An IntersectionObserver marks the link whose group is
 // in the reading band, so it has nothing to unsubscribe and no scroll handler
