@@ -15,6 +15,7 @@ import { initMediaStory } from './modules/media-story';
 import { initBenefitsModals } from './modules/benefits-modal';
 import { initFaq } from './modules/faq';
 import { initPricing } from './modules/pricing';
+import { initPricingTabs } from './modules/pricing-tabs';
 import { initEnvironmentSwitcher } from './modules/environment-switcher';
 
 // Release the pre-paint scroll lock set by the head bootstrap (loader.html).
@@ -105,6 +106,10 @@ run('faq', () => initFaq());
 // collapsing anything, so a failure here leaves the benefits readable rather
 // than hidden. No-ops on any page without a data-pricing block.
 run('pricing', () => initPricing());
+
+// /pricing sticky tab bar: moves .is-active to the tab whose section the
+// reader is in. No-ops on any page without a .pricing-tabs bar.
+run('pricing tabs', () => initPricingTabs());
 
 // Internal tool: prints each background video's CDN URL on /design/video-library
 // so it can be copied for use elsewhere. No-ops on every other page.
