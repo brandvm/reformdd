@@ -17,6 +17,7 @@ import { initJoinPopup } from './modules/join-popup';
 import { initFaq } from './modules/faq';
 import { initPricing } from './modules/pricing';
 import { initPricingTabs } from './modules/pricing-tabs';
+import { initCountdown } from './modules/countdown';
 import { initEnvironmentSwitcher } from './modules/environment-switcher';
 
 // Release the pre-paint scroll lock set by the head bootstrap (loader.html).
@@ -116,6 +117,10 @@ run('pricing', () => initPricing());
 // /pricing sticky tab bar: moves .is-active to the tab whose section the
 // reader is in. No-ops on any page without a .pricing-tabs bar.
 run('pricing tabs', () => initPricingTabs());
+
+// /presale opening countdown. Counts to the date in data-countdown; no-ops on
+// any page without one.
+run('countdown', () => initCountdown());
 
 // Internal tool: prints each background video's CDN URL on /design/video-library
 // so it can be copied for use elsewhere. No-ops on every other page.
