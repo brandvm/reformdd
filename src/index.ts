@@ -18,7 +18,6 @@ import { initFaq } from './modules/faq';
 import { initPricing } from './modules/pricing';
 import { initPricingTabs } from './modules/pricing-tabs';
 import { initCountdown } from './modules/countdown';
-import { initEnvironmentSwitcher } from './modules/environment-switcher';
 
 // Release the pre-paint scroll lock set by the head bootstrap (loader.html).
 // Must stay FIRST and unconditional: anything above it that throws leaves the
@@ -126,8 +125,3 @@ run('countdown', () => initCountdown());
 // so it can be copied for use elsewhere. No-ops on every other page.
 run('video library', initVideoLibrary);
 
-// Internal tool: the bottom-left Dev / Staging switcher. No-ops off *.webflow.io
-// and inside the Designer, so it never reaches a visitor. Last on purpose — it
-// is the only module that appends to <body>, and a switcher is most useful when
-// the modules above it are the ones misbehaving.
-run('environment switcher', initEnvironmentSwitcher);

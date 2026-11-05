@@ -23,6 +23,20 @@ repos to improve `brandvm/wf-template`.
 
 ## This project
 
+### 2026-11-05 · A failed element build still leaves its root element
+- Area: mcp
+- Scope: template-candidate
+- Symptom: `data_element_builder` returned `"id" is a reserved attribute
+  name` and reported no element, but an empty `Section` with its classes
+  was left on /presale above the real build.
+- Cause: the builder creates the root before it applies `set_attributes`,
+  and does not roll back when an attribute is rejected.
+- Fix: never pass `id` in `set_attributes`; set it afterwards with
+  `data_element_settings_tool` › `set_dom_id`. After any failed build,
+  query the parent for an orphaned root and remove it.
+- Status: open (workaround)
+- Found by: claude
+
 ### 2026-10-08 · Form field names set through the MCP never publish
 - Area: mcp
 - Scope: template-candidate
