@@ -1,8 +1,13 @@
 {
   "format": 2,
-  "plans": [],
+  "plans": [
+    {"id":"build","kind":"new-build","status":"active","started":"2026-11-05"}
+  ],
   "ticks": {},
-  "todos": [],
+  "todos": [
+    {"id":"t-c95f52d7","text":"Presale page: send the client and Angie the questions (dates, packages and caps, booking links, email platform, ad pixels, domain/DNS, Figma link and timing)","done":false,"page":"/presale"},
+    {"id":"t-977c8194","text":"Get the Figma link with the updated images, pricing, booking links and terms from the client before the presale build starts","done":false}
+  ],
   "components": [],
   "history": []
 }
