@@ -6,7 +6,9 @@
   "ticks": {},
   "todos": [
     {"id":"t-c95f52d7","text":"Presale page: send the client and Angie the questions (dates, packages and caps, booking links, email platform, ad pixels, domain/DNS, Figma link and timing)","done":false,"page":"/presale"},
-    {"id":"t-977c8194","text":"Get the Figma link with the updated images, pricing, booking links and terms from the client before the presale build starts","done":false}
+    {"id":"t-977c8194","text":"Get the Figma link with the updated images, pricing, booking links and terms from the client before the presale build starts","done":false},
+    {"id":"t-ce021777","text":"Presale placeholders for the client and Angie to confirm: opening date and time (the countdown is set to 2027-01-15 09:00 PT in data-countdown), founding tier names and presale prices (now \"$TBC\"; regular prices $399 / $339 / $275), the Buy now links to the booking platform (now \"#\"), the number of spots per tier, and presale terms.","done":false,"page":"/presale"},
+    {"id":"t-231f10a6","text":"Designer: open component S | Page Hero, select its Body L subtitle text and bind it to the Subtitle prop. The API can't bind text to a prop; until it's bound, /presale shows \"A Lagree Fitness and Wellness Studio\" instead of the presale subtitle. Other pages keep the default.","done":false,"page":"/presale"}
   ],
   "components": [],
   "history": []
