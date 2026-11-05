@@ -12,6 +12,7 @@ site. Webflow owns markup, layout, components, and CMS content.
 - Client / site: Reformd
 - GitHub: `brandvm/reformdd`, default branch `master`
 - Webflow site ID: `6aa30843ef516b660e7d8770`
+- Webflow MCP server: `webflow-reformdd` (`.mcp.json`)
 - Home page ID: `6aa30847ef516b660e7d877b`
 - Designer: `https://reformdd.design.webflow.com`
 - Staging site: `https://reformdd.webflow.io`
@@ -161,6 +162,21 @@ release/untracking sequence in the README, then bump `VER` in BOTH Webflow
 snippets (Embed and footer). Never use `@latest` or a branch URL in
 production. History is shared across machines: revert, never reset or
 force-push.
+
+## Webflow MCP connection
+
+Each client repo has its own MCP server name, `webflow-<slug>` in
+`.mcp.json`, so each keeps its own Webflow sign-in on the machine. The
+sign-in (OAuth token) never goes in the repo: these repos are public.
+
+- Use only the server named in Project facts. Never write to Webflow
+  through another client's server or the account-wide claude.ai Webflow
+  connector, which may reach other clients' sites.
+- Before the first write in a session, list the sites the server reaches
+  and check the site ID matches Project facts. A mismatch or extra sites →
+  stop and ask the user to re-authorise with only this site ticked.
+- The cloud (claude.ai/code) can't run the OAuth sign-in; Webflow MCP work
+  happens in a local Claude Code session opened in the workspace.
 
 ## Webflow MCP limits
 

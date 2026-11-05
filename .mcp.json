@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "webflow": {
+    "webflow-reformdd": {
       "type": "http",
       "url": "https://mcp.webflow.com/mcp"
     }
