@@ -7,7 +7,6 @@
     "dev": "node build.mjs --dev",
     "build": "node build.mjs",
     "check": "tsc --noEmit",
-    "test": "pnpm build && playwright test",
     "update-skills": "node scripts/update-skills.mjs",
     "phosphor": "node scripts/phosphor.mjs",
     "progress": "node scripts/progress.mjs",

@@ -124,4 +124,3 @@ run('countdown', () => initCountdown());
 // Internal tool: prints each background video's CDN URL on /design/video-library
 // so it can be copied for use elsewhere. No-ops on every other page.
 run('video library', initVideoLibrary);
-

@@ -111,10 +111,6 @@ instance on each page. Record installed snippet changes in `loader.html`.
   as CDN tags.
 - Lenis sets `window.lenis = { version }` itself as a marker; pass the Lenis
   instance into modules instead of probing the global (c299342).
-- The Dev / Staging switcher (`src/modules/environment-switcher.ts`, last in
-  the manifest) is limited to `*.webflow.io`, hidden in the editor/Designer
-  and in print, Shadow-DOM isolated. Its fallback awareness comes from the
-  loader (`window.BV.source`), so it cannot be updated by a push alone.
 
 ## Webflow canvas facts
 
@@ -148,7 +144,6 @@ message, and keep `loader.html` identical to what is installed.
 pnpm dev      # esbuild watch + server on :3000 (unminified, sourcemaps)
 pnpm build    # minified -> dist/
 pnpm check    # tsc --noEmit
-pnpm test     # build + Playwright browser checks (environment switcher)
 ```
 
 Use the pinned pnpm version and Node 22 (`.nvmrc`). Run `pnpm check` and
