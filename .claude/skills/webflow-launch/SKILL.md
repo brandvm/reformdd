@@ -1,0 +1,197 @@
+---
+name: webflow-launch
+description: Take a finished Webflow build live and through its first month: the SEO plan and schema, pre-launch QA (content, function, devices, accessibility, speed, SEO and tracking), launch day (publish, release, redirects, noindex off), handoff to the client and the 30-day follow-up. Use when a Webflow site built with wf-template is signed off and heading for launch, on launch day, when handing the site to the client, or for after-launch checks.
+---
+
+# Webflow launch: signed-off build → live site → first 30 days
+
+Starts where the `webflow-build` skill's **Build handoff** ends: every page
+complete on staging and signed off against the design. The standing rules
+of `webflow-build` still apply (no commit, push, publish to a custom domain,
+release or DNS change without an explicit OK; no credentials in chat).
+
+Tags: **[Claude]** Claude does it · **[Claude checks]** Claude verifies and
+reports · **[Person]** a person does it; Claude may track it, never claim it.
+Commands are the `webflow-build` check scripts (`pnpm wf:*`, from the repo;
+add `--live` to check what visitors get). Where a list names another skill
+(`webflow-performance-optimizer`, `asset-audit`, `safe-publish`), use it if
+the session has it; otherwise do the check by hand and say so.
+
+How to run it:
+1. Record each item as it's done with `pnpm progress tick "<checklist>"
+   "<the start of the item>"` (`--by check` when a `pnpm wf:*` script
+   decided it), as in `webflow-build` › checklists.md › How to record
+   progress. Bench's Tasks panel shows the same list; `pnpm progress show`
+   prints it, with the person's own to-dos.
+2. Work top to bottom; report each section's result before moving on.
+3. Anything that fails goes into the known issues list as "fix before
+   launch" or "fix after launch", with an owner.
+4. The `webflow-build` check scripts still work against the live domain:
+   pass `--live`, and point `stagingUrl` at the domain when checking it.
+
+## SEO plan (during review, before pre-launch QA)
+
+SEO is planned and built, not only checked at the end. The plan lives in
+the repo's `docs/handoff/SEO-PLAN.md` (the template has the stub): what
+staging outputs today, the steps, the schema per page and what is needed
+from the client.
+
+- [Claude] Inventory every page and template: title and description
+  (with lengths), Open Graph fields and image, noindex, JSON-LD. Read the
+  published HTML (`pnpm wf:seo`), not the page settings.
+- [Claude] Draft the missing or weak titles and descriptions;
+  [Person] approves them; [Claude] writes them in the page settings
+  (templates bind a Meta Title and Meta Description field).
+- [Claude] Open Graph "same as SEO" everywhere; [Person] approves a
+  default 1200×630 share image; templates bind an image field.
+- [Claude] Site-wide tags Webflow doesn't write (`og:site_name`,
+  `og:locale`) go in the head snippet in `loader.html`: re-paste and
+  publish, then `pnpm wf:install`.
+- [Claude] Schema as JSON-LD files in the repo, one per page
+  (`docs/seo/schema/<page>.jsonld`) and `docs/seo/schema/templates.md`
+  for CMS templates with their `{Field}` bindings. Each item refers to one
+  Organization by `@id` on the production domain. The file is the source
+  of truth; the page's head code (or `jsonLdSchema` through the pages
+  tool, where the connector has it) is a copy. Bind single-line fields
+  only: a quote or line break breaks the JSON, and an apostrophe becomes
+  `&#39;`.
+- [Claude] Heading plan: `pnpm wf:outline` on every page and template,
+  checked against [headings.md](headings.md). Tag fixes go in the build;
+  [Person] approves any change of H1 or H2 wording (it is copy).
+- [Claude] Redirect map, when the site replaces an old one:
+  `pnpm wf:redirects map` (the old site from `liveUrl`, or `--from`)
+  writes `docs/seo/redirects.csv` in Webflow's import format; every row
+  printed under "needs a look" is checked and edited in the file.
+  [Person] approves the map, and exports the site's existing 301s if it
+  has any (an import replaces them all; re-run with `--existing`).
+- [Claude checks] Every page in the sitemap has its title, description,
+  canonical and one H1 on staging (`pnpm wf:seo`).
+- [Claude checks] No duplicate titles or descriptions and a real 404; long
+  titles and short descriptions are fixed or accepted; pages with no
+  schema are in `seo.noSchemaOk`. Then Google's Rich Results Test on one
+  page of each type.
+- [Person] Supplies the official name, address, phone, hours, social
+  profiles and the production domain (www or apex).
+
+## Pre-launch QA
+
+Content
+- [Claude checks] No placeholder text or `#` links (`pnpm wf:links`, which
+  also flags lorem ipsum); stand-in images checked against the known issues.
+- [Person] Proofread every page.
+- [Claude checks] No `data-manual-todo` marker left in the published HTML
+  (every manual step done); `docs/handoff/REVIEW.md` › Before launch all
+  ticked.
+- [Claude checks] Contact data: phones as `tel:` links, addresses,
+  emails, hours; [Person] confirms they're correct.
+- [Claude checks] Legal pages present and linked in the footer; copyright
+  year and social links.
+
+Function
+- [Person] Submit every form once: it arrives in the right inbox or CRM,
+  the confirmation shows, the auto-reply sends. (Claude can't pass
+  spam protection; headless browsers get blocked by it.)
+- [Claude checks] All links and buttons work (`pnpm wf:links --external`;
+  confirm external failures by hand, some sites block bots).
+- [Claude checks] 404 page, loading, empty, success and error states.
+- [Claude checks] Search, filters, sorting and pagination, if any.
+- [Person] Payments: a test purchase and a refund, if any.
+
+Devices, accessibility, speed
+- [Person] Real devices: iPhone Safari, Android Chrome; desktop Chrome,
+  Safari, Firefox, Edge.
+- [Claude checks] `pnpm wf:overflow` on every page template: nothing
+  runs off the right edge and no sideways scroll, at every width from
+  2560 to 360 (laptop widths between the breakpoints included).
+- [Claude checks] No serious or critical accessibility failures on any
+  page, at every width (`pnpm wf:a11y --all-widths`). Target: WCAG 2.2 AA.
+- [Claude] Keyboard-only walkthrough of every page: focus visible, order,
+  menus, dialogs, Escape.
+- [Person] Screen reader spot check.
+- [Claude checks] Performance on a phone profile: CLS < 0.1, INP < 200 ms,
+  LCP < 2.5 s as targets (`webflow-performance-optimizer`); note what the
+  design trades off.
+
+SEO and tracking
+- [Claude checks] Every page in the sitemap has its title, description,
+  canonical and one H1 (`pnpm wf:seo`).
+- [Claude checks] OG tags and JSON-LD that parses with no HTML entities on
+  every page, and noindex only on the pages in `seo.noindexOk`: the rest of
+  the SEO report. Alt text (`asset-audit`), favicon, schema where
+  `SEO-PLAN.md` plans it.
+- [Claude checks] Canonicals point to the live domain (after the domain is
+  attached: `liveUrl` in the config, then `pnpm wf:seo --live --canonical`).
+- [Claude checks] `pnpm wf:tracking --live` once the tags are on the
+  domain (on staging first, if they load there): which tags load on which
+  pages, no page view counted twice, nothing tracks before the cookie
+  choice or after Reject, gclid and UTM survive the host redirects. Every
+  request that sends data is blocked, so the check adds nothing to the
+  client's reports. It can't tell whether an account received anything.
+- [Person] GA4 and conversions arrive (Realtime report), after accepting
+  cookies on the live site.
+
+## Launch day
+
+- [Person] Content freeze agreed; go-live approval and date from the
+  client.
+- [Person] DNS: lower the TTL a day ahead; keep the email records (MX,
+  SPF, DKIM). Claude doesn't change DNS or registrar settings.
+- [Claude] With an explicit OK: publish to the live domain (`safe-publish`
+  if available: show what changed, confirm, publish); cut the repo release
+  and set `RELEASE` in the head snippet (README › Release).
+- [Claude checks] `pnpm wf:domain`: the certificate is trusted and not
+  near its end, http and the other www host redirect permanently to the
+  `liveUrl` host, the domain doesn't expire within 45 days.
+- [Claude checks] `pnpm wf:install --live`: the published snippets match
+  `loader.html` (with the new `RELEASE`), one viewport meta, no request to
+  localhost.
+- [Claude checks] `pnpm wf:seo --live --canonical`: no noindex left
+  outside `seo.noindexOk`, every canonical on the live domain.
+- [Claude] Remove noindex and the staging password; robots.txt allows
+  indexing.
+- [Claude] Save the visual baselines of the live site (`pnpm wf:baseline
+  save --live`, every page in `pages`) and commit them.
+- [Claude] Apply the 301 redirects: [Person] imports
+  `docs/seo/redirects.csv` (Site settings › Publishing › 301 redirects ›
+  Import) and publishes; [Claude checks] `pnpm wf:redirects test --live`:
+  every row lands on its page in one permanent hop.
+- [Claude checks] `sitemap.xml` exists (Site settings › SEO ›
+  Auto-generate sitemap) and does **not** list `/design/style-guide` or
+  `/design/media`: exclude both through the sitemap tool once the site
+  plan is on (it answers 403 before that).
+- [Person] Submit sitemap.xml in Search Console.
+- [Person] Submit a form on the live site and see the visit in analytics.
+
+## Handoff to client (go-live approved)
+
+All [Person], Claude can prepare the documents:
+- Live site; ownership transfer (Webflow site, hosting billing, domain,
+  design files, font and image licences). [Claude] lists what to transfer:
+  registrar, DNS host and renewal dates (`pnpm wf:domain`), the tags with
+  their IDs and the third-party services the pages load (`pnpm wf:tracking
+  --live`).
+- CMS training (recorded) and training notes ([Claude] drafts them from
+  the CMS notes).
+- Analytics, Tag Manager and Search Console access.
+- Credentials returned; agency access removed or kept under a support
+  agreement.
+- Support terms and the first improvements roadmap.
+
+## After launch (first 30 days)
+
+- [Claude checks] Days 1 to 3: crawl for 404s and redirect chains
+  (`pnpm wf:links --live --external`); [Person] checks Search Console
+  coverage and exports its "Not found (404)" URLs; [Claude checks]
+  `pnpm wf:redirects test --live --file <export>` and adds rows to the
+  map for any that fail.
+- [Person] Week 1: leads arriving, analytics numbers look right.
+- [Person] Weeks 2 to 4: indexing and traffic against the baseline.
+- [Claude] Fix the after-launch items from the known issues list.
+- [Person] 30-day check-in, retro, testimonial or case study.
+- [Claude checks] `pnpm wf:domain` at the check-in (and on any later
+  support visit): renewals coming up go to whoever pays for them.
+- [Claude] Before every later release: `pnpm wf:baseline compare --live`
+  after publishing to staging; every change is expected or fixed.
+- [Claude] Offer the project's new `template-candidate` GOTCHAS to the
+  template (webflow-build › rules.md › Contributing); the template collects them with
+  `pnpm harvest`.

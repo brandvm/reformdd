@@ -12,6 +12,7 @@ site. Webflow owns markup, layout, components, and CMS content.
 - Client / site: Reformd
 - GitHub: `brandvm/reformdd`, default branch `master`
 - Webflow site ID: `6aa30843ef516b660e7d8770`
+- Webflow MCP server: `webflow-reformdd` (`.mcp.json`)
 - Home page ID: `6aa30847ef516b660e7d877b`
 - Designer: `https://reformdd.design.webflow.com`
 - Staging site: `https://reformdd.webflow.io`
@@ -110,10 +111,6 @@ instance on each page. Record installed snippet changes in `loader.html`.
   as CDN tags.
 - Lenis sets `window.lenis = { version }` itself as a marker; pass the Lenis
   instance into modules instead of probing the global (c299342).
-- The Dev / Staging switcher (`src/modules/environment-switcher.ts`, last in
-  the manifest) is limited to `*.webflow.io`, hidden in the editor/Designer
-  and in print, Shadow-DOM isolated. Its fallback awareness comes from the
-  loader (`window.BV.source`), so it cannot be updated by a push alone.
 
 ## Webflow canvas facts
 
@@ -147,7 +144,6 @@ message, and keep `loader.html` identical to what is installed.
 pnpm dev      # esbuild watch + server on :3000 (unminified, sourcemaps)
 pnpm build    # minified -> dist/
 pnpm check    # tsc --noEmit
-pnpm test     # build + Playwright browser checks (environment switcher)
 ```
 
 Use the pinned pnpm version and Node 22 (`.nvmrc`). Run `pnpm check` and
@@ -161,6 +157,21 @@ release/untracking sequence in the README, then bump `VER` in BOTH Webflow
 snippets (Embed and footer). Never use `@latest` or a branch URL in
 production. History is shared across machines: revert, never reset or
 force-push.
+
+## Webflow MCP connection
+
+Each client repo has its own MCP server name, `webflow-<slug>` in
+`.mcp.json`, so each keeps its own Webflow sign-in on the machine. The
+sign-in (OAuth token) never goes in the repo: these repos are public.
+
+- Use only the server named in Project facts. Never write to Webflow
+  through another client's server or the account-wide claude.ai Webflow
+  connector, which may reach other clients' sites.
+- Before the first write in a session, list the sites the server reaches
+  and check the site ID matches Project facts. A mismatch or extra sites →
+  stop and ask the user to re-authorise with only this site ticked.
+- The cloud (claude.ai/code) can't run the OAuth sign-in; Webflow MCP work
+  happens in a local Claude Code session opened in the workspace.
 
 ## Webflow MCP limits
 
