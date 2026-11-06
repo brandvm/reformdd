@@ -69,6 +69,34 @@ repos to improve `brandvm/wf-template`.
 
 <!-- Add new entries here, newest first. -->
 
+### 2026-11-06 · Clicked /pricing tab never turned active
+- Area: js
+- Scope: project
+- Symptom: Clicking Lagree Memberships, Lagree Packs or Wellness scrolled
+  to the group but left the previous tab highlighted.
+- Cause: `anchor-scroll.ts` lands targets below the sticky ancestor
+  (`.s-pricing.is-anchor`, 290px tall, `top: -104px`, so its bottom sits at
+  ~186px), while `pricing-tabs.ts` measured only `.pricing-tabs` (bottom
+  ~102px). Targets landed at 210px, below the highlight line at 127px.
+- Fix: `pricing-tabs.ts` measures the larger of the tab row and its sticky
+  ancestor, matching where anchor-scroll lands a target.
+- Status: fixed (uncommitted)
+- Found by: human
+
+### 2026-11-06 · `set_link` leaves a stale custom `href` attribute behind
+- Area: mcp
+- Scope: template-candidate
+- Symptom: After `set_link` on the /pricing tabs, `get_settings` showed the
+  new `link` (`#founding-memberships`) but `attributes` still held
+  `href="#lagree-pricing"`, and `query_elements` reported the old href.
+- Cause: The original tabs carried `href` as a custom attribute alongside the
+  Link setting; `set_link` writes only the Link setting.
+- Fix: `remove_attribute` `href` after `set_link`, then confirm with
+  `get_settings` (`link` set, `attributes` empty). Links made by
+  `data_element_builder` have no such attribute.
+- Status: fixed (Webflow, not repo)
+- Found by: claude
+
 ### 2026-09-28 · `window.lenis` is a marker, not the instance
 - Area: js
 - Scope: template-candidate

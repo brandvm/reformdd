@@ -7,14 +7,27 @@
 // two pricing blocks are tall and separated by other sections, so a band
 // would leave whichever tab it last saw active while the reader is between
 // them. Here the active tab is the last section whose top has crossed the
-// line where anchor-scroll.ts lands a target (bar bottom + 24px), so a
-// click and the highlight always agree.
+// line where anchor-scroll.ts lands a target (bottom of the pinned block +
+// 24px), so a click and the highlight always agree.
+//
+// The pinned block is the sticky ancestor (.s-pricing.is-anchor), not the
+// tab row: anchor-scroll measures the sticky element, whose padding runs
+// ~84px below the pills. Measuring the row put the line above where clicked
+// sections land, so the clicked tab never lit up.
 
 const GAP = 24;
+
+function stickyAncestor(el: HTMLElement): HTMLElement {
+  for (let node: HTMLElement | null = el; node; node = node.parentElement) {
+    if (getComputedStyle(node).position === "sticky") return node;
+  }
+  return el;
+}
 
 export function initPricingTabs(scope: ParentNode = document) {
   const bar = scope.querySelector<HTMLElement>(".pricing-tabs");
   if (!bar) return;
+  const pinned = stickyAncestor(bar);
   const tabs = Array.from(bar.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'))
     .map((link) => ({ link, section: document.getElementById(link.hash.slice(1)) }))
     .filter((t): t is { link: HTMLAnchorElement; section: HTMLElement } => !!t.section);
@@ -22,7 +35,7 @@ export function initPricingTabs(scope: ParentNode = document) {
 
   let current: HTMLAnchorElement | null = null;
   const update = () => {
-    const line = bar.getBoundingClientRect().bottom + GAP + 1;
+    const line = Math.max(bar.getBoundingClientRect().bottom, pinned.getBoundingClientRect().bottom) + GAP + 1;
     let active = tabs[0];
     for (const t of tabs) if (t.section.getBoundingClientRect().top <= line) active = t;
     if (active.link === current) return;
