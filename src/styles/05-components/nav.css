@@ -26,6 +26,14 @@
 [data-nav-part="bar"] {
   background-color: transparent;
   border-bottom: var(--_spacing---hairline) solid transparent;
+}
+
+/* repo-css: js-state — transitions only once the bundle has booted
+   (html.is-loading removed). This sheet lands a frame after Webflow's, and
+   its fluid root font-size moves the bar height 116→103px; with the
+   transition live from first paint that read as the header shrinking and
+   its rule fading on every page load. */
+html:not(.is-loading) [data-nav-part="bar"] {
   transition:
     height 320ms var(--ease-bbs),
     background-color 320ms var(--ease-bbs),
@@ -35,7 +43,7 @@
 /* Width, not transform, so the mark is re-rendered from the vector at every
    size instead of being rasterised once and scaled — that is what makes an
    inline SVG go soft on mobile. */
-[data-nav-part="logo"] {
+html:not(.is-loading) [data-nav-part="logo"] {
   transition: width 320ms var(--ease-bbs);
 }
 
@@ -46,11 +54,17 @@
    only as long as the transition, and the text re-rasterises crisply at rest. */
 [data-nav-part="toggle-icon"] {
   transform-origin: left center;
+}
+
+html:not(.is-loading) [data-nav-part="toggle-icon"] {
   transition: transform 320ms var(--ease-bbs);
 }
 
 [data-nav-part="actions"] {
   transform-origin: right center;
+}
+
+html:not(.is-loading) [data-nav-part="actions"] {
   transition: transform 320ms var(--ease-bbs);
 }
 
