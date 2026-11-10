@@ -23,6 +23,42 @@ repos to improve `brandvm/wf-template`.
 
 ## This project
 
+### 2026-11-10 · Every Button opened in a new tab, internal links included
+- Area: designer
+- Scope: template-candidate
+- Symptom: Join Us → /pricing (and /contact, same-page anchors) opened a
+  new tab. Setting "open in new tab" off on the instance changed nothing.
+- Cause: the Button component's root Link carried a hardcoded custom
+  attribute `target="_blank"`, applied to all 82 instances regardless of
+  the Link prop.
+- Fix: bound that attribute to a new string prop **Link Target** (default
+  `_blank`, so Arketa buttons are unchanged). Exposed it as **Button 1
+  Target** on S | Page Hero and **Button Target** on Suite Card, and set
+  `_self` on Home Join US, /sweat and /about-us hero Button 1, /recover
+  hero Button 1 and the Massage suite card. New internal buttons need
+  `_self` set by hand.
+- Status: fixed (Webflow, unpublished at time of writing)
+- Found by: human
+
+### 2026-11-10 · Desktop Code session never loaded `webflow-reformdd`
+- Area: mcp
+- Scope: template-candidate
+- Symptom: In the Claude desktop app (Code tab), the repo's `.mcp.json`
+  server was missing from the session's tools, even though `claude mcp list`
+  in the repo showed `webflow-reformdd ✔ Connected`. The only Webflow tools
+  were the account-wide claude.ai connector, and after it was re-authorised
+  it reached only another client's site (RegenX). Reconnecting it did not
+  change what a session that was already open could reach.
+- Cause: the desktop session loads claude.ai connectors but did not load
+  the project `.mcp.json` server. The account connector keeps the token it
+  started with.
+- Fix: run the Webflow work through the CLI in the repo folder, which does
+  load the repo server: `claude -p '<task>' --allowedTools
+  "mcp__webflow-reformdd__data_sites_tool,…"`, starting with a list_sites
+  check that returns only this site. Used for the Join Us → /pricing change.
+- Status: workaround
+- Found by: claude
+
 ### 2026-11-05 · A failed element build still leaves its root element
 - Area: mcp
 - Scope: template-candidate
