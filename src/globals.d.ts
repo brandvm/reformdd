@@ -2,11 +2,19 @@ export {};
 
 declare global {
   interface Window {
-    BV?: {
+    WFC?: {
       staging: boolean;
       dev: boolean;
       devBase: string;
       stag: string;
+      // The pinned release tag from the head snippet, or null before the
+      // first release.
+      release: string | null;
+      // Base URL production loads from: the jsDelivr tag, or staging while
+      // release is null.
+      prod: string;
+      // Swaps the site stylesheet without an unstyled gap (Embed 2b).
+      setCSS?: (href: string) => void;
       // Set before script execution, including when a fallback URL is used.
       source?: string;
     };

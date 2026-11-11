@@ -18,6 +18,7 @@ import { initFaq } from './modules/faq';
 import { initPricing } from './modules/pricing';
 import { initPricingTabs } from './modules/pricing-tabs';
 import { initCountdown } from './modules/countdown';
+import { initYear } from './modules/year';
 
 // Release the pre-paint scroll lock set by the head bootstrap (loader.html).
 // Must stay FIRST and unconditional: anything above it that throws leaves the
@@ -120,6 +121,9 @@ run('pricing tabs', () => initPricingTabs());
 // /presale opening countdown. Counts to the date in data-countdown; no-ops on
 // any page without one.
 run('countdown', () => initCountdown());
+
+// Footer copyright: keeps the year in any [data-year] element current.
+run('year', () => initYear());
 
 // Internal tool: prints each background video's CDN URL on /design/video-library
 // so it can be copied for use elsewhere. No-ops on every other page.

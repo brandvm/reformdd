@@ -46,8 +46,9 @@ pnpm check    # tsc --noEmit
 ## Webflow integration
 
 The three snippets in [`loader.html`](loader.html) are configured for this
-repository: site head code, a canvas CSS/config Embed, and site footer code.
-The canvas Embed lives in the reusable **Global Custom Code** component.
+repository: site head code, two canvas CSS Embeds (2a link, 2b script), and
+site footer code. The Embeds live in the reusable **Global Components**
+component.
 Include one instance on every new page, before the visible page content.
 Site custom code does not render in the Designer.
 
@@ -61,15 +62,15 @@ repository only updates the external JS and CSS bundles.
 
 ## Daily
 
-- Run `pnpm dev`, then open the `.webflow.io` site with `?bv-dev=1` to load the
-  local bundle (remembered in localStorage); `?bv-dev=0` switches back to staging.
+- Run `pnpm dev`, then open the `.webflow.io` site with `?wfc-dev=1` to load the
+  local bundle (remembered in localStorage); `?wfc-dev=0` switches back to staging.
   Bench does this for you in its preview.
 - `git push` → client-facing staging bundle updates in ~1 min (no Webflow publish)
 - Live reload works in the browser. It does **not** work on the Designer canvas,
   which never runs scripts — reload the Designer tab instead.
 
-The loader records which bundle actually executed in `window.BV.source`; if
-localhost fails it falls back to staging and re-points `bv-css` to match.
+The loader records which bundle actually executed in `window.WFC.source`; if
+localhost fails it falls back to staging and re-points `wfc-css` to match.
 
 ## Release (launch / retainer updates)
 
@@ -94,9 +95,9 @@ disk, so the ignore rule applies again. The tag is untouched — it still
 points at the commit that contains the build, and jsDelivr serves that
 forever.
 
-Then bump `VER` in BOTH Webflow snippets (the CSS/config Embed and the footer
-loader) → publish staging → verify → publish prod.
-Rollback = revert the version strings. Never use `@latest` or branch URLs in prod.
+Then set `RELEASE` in the Webflow head snippet (the only version string) →
+publish staging → verify → publish prod.
+Rollback = set `RELEASE` back to the previous tag and publish. Never use `@latest` or branch URLs in prod.
 
 **Tag rules (learned the hard way):**
 
@@ -108,9 +109,9 @@ Rollback = revert the version strings. Never use `@latest` or branch URLs in pro
   dead for every commit after the first release
 
 **Before attaching a custom domain,** confirm the repo actually has the tag
-`VER` points at. A site running on `.webflow.io` never touches the prod URLs,
-so a placeholder `VER = "X.Y.Z"` stays invisible until the moment the domain
-goes live — and then both CSS and JS 404 at once.
+`RELEASE` points at. A site running on `.webflow.io` never touches the prod
+URLs. While `RELEASE` is `null`, a custom domain serves the staging bundle
+and logs a console error rather than 404ing.
 
 ## How the files reach the page
 
@@ -121,7 +122,7 @@ before touching any of them.
 | -------------- | ----------------------- |
 | Production     | pinned jsDelivr tag     |
 | `*.webflow.io` | GitHub Pages staging    |
-| `?bv-dev=1`    | `http://localhost:3000` |
+| `?wfc-dev=1`    | `http://localhost:3000` |
 
 Dev mode is localhost-only by design: `http://localhost` is a
 potentially-trustworthy origin so an https page may load it, but a LAN IP is

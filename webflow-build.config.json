@@ -1,0 +1,7 @@
+{
+  "stagingUrl": "https://reformdd.webflow.io",
+  "repoDir": ".",
+  "bundlePattern": "brandvm\\.github\\.io/reformdd/(index\\.js|styles\\.css)",
+  "widths": [[1440, 900], [820, 1180], [667, 375], [390, 844]],
+  "pages": ["/", "/sweat", "/recover", "/pricing", "/presale", "/about-us", "/faqs", "/contact", "/privacy-policy", "/terms-and-conditions", "/terms-of-service", "/accessibility-policy"]
+}

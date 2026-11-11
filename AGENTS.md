@@ -17,9 +17,10 @@ site. Webflow owns markup, layout, components, and CMS content.
 - Designer: `https://reformdd.design.webflow.com`
 - Staging site: `https://reformdd.webflow.io`
 - Staging bundles: `https://brandvm.github.io/reformdd/`
-- Production bundles: `https://cdn.jsdelivr.net/gh/brandvm/reformdd@<VER>/dist/`
+- Production bundles: `https://cdn.jsdelivr.net/gh/brandvm/reformdd@<RELEASE>/dist/`
 - Production domain: not attached yet
-- Production release: `v0.1.0` (`VER = "0.1.0"` in `loader.html`)
+- Production release: none pinned yet (`RELEASE = null` in the head
+  snippet of `loader.html`; tag `v0.1.0` predates launch work)
 
 ## Who owns what
 
@@ -92,12 +93,13 @@ change to them in `GOTCHAS.md`):
 
 Read `README.md` and `loader.html` before changing integration or releases.
 Use the connected Webflow tools to verify the target site and discover any
-site instructions before writing. Keep one Global Custom Code component
+site instructions before writing. Keep one Global Components component
 instance on each page. Record installed snippet changes in `loader.html`.
 
-- `loader.html` — the three snippets: site head code, the CSS/config Embed
-  (inside the reusable **Global Custom Code** component, one instance on
-  every page, before the visible content) and site footer code.
+- `loader.html` — the three pieces: site head code (config and release),
+  two CSS Embeds (2a the `<link>`, 2b the `<script>`, inside the reusable
+  **Global Components** component, one instance on every page, before the
+  visible content) and site footer code.
 - Feature modules belong in `src/modules/`; `src/index.ts` is the
   entry-point manifest. Each module must no-op when its target markup is
   absent. Each init is wrapped in `run(name, init)` with try/catch so one
@@ -115,16 +117,19 @@ instance on each page. Record installed snippet changes in `loader.html`.
 ## Webflow canvas facts
 
 - **Repo CSS is visible on the Designer canvas**: it loads from `<link>`
-  tags in the Global Custom Code Embed. Site head/footer code does not
+  tags in the Global Components Embed (2a). Site head/footer code does not
   render in the Designer.
 - **The Designer canvas never runs scripts.** Anything shown only after JS
   runs is invisible there; use a `canvas-preview` rule, or a class toggle
   rather than inline styles (dfd0338 moved feature-tab copy visibility to
   `is-open` so the Designer shows the open panel).
-- **The canvas loads two stylesheets — staging and localhost — and they are
-  additive.** Adding a rule locally shows up; *removing* one does not,
-  because staging's copy still applies. Deletions can only be verified after
-  a push, or by temporarily commenting out the `bv-css` link.
+- **The canvas shows the staging stylesheet only.** The static localhost
+  `<link>` was removed (wf-template 0.24 loader, K10 in
+  `docs/handoff/LAUNCH.md`). To style against local CSS, add the
+  `wfc-css-dev` link from `loader.html` › 2a temporarily, with `pnpm dev`
+  running, and remove it before publishing. While it is there the two
+  sheets are additive: removing a rule locally does not remove staging's
+  copy, so deletions can only be verified after a push.
 - No live reload on the canvas. Reload the Designer tab.
 - Debug "is my CSS loading?" with `background`, not `outline` — outlines on
   `body` paint outside the canvas iframe and get clipped.
@@ -153,8 +158,9 @@ Pages; also runnable manually).
 
 `dist/` is ignored except in release commits. Release tags must include the
 built assets and must never be moved after publication. Follow the
-release/untracking sequence in the README, then bump `VER` in BOTH Webflow
-snippets (Embed and footer). Never use `@latest` or a branch URL in
+release/untracking sequence in the README, then set `RELEASE` in the
+Webflow head snippet — the only version string since the wf-template 0.24
+loader. Never use `@latest` or a branch URL in
 production. History is shared across machines: revert, never reset or
 force-push.
 

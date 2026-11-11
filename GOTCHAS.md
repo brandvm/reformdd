@@ -23,6 +23,31 @@ repos to improve `brandvm/wf-template`.
 
 ## This project
 
+### 2026-11-11 · `update_color_variable` with `mode_id: "base"` fails
+- Area: mcp
+- Scope: template-candidate
+- Symptom: Repointing Text/Muted and Text/Secondary to new primitives
+  returned "An internal error occurred" and changed nothing when
+  `mode_id: "base"` was passed.
+- Cause: the base mode is not addressed by that id; the tool expects the
+  mode id omitted for the base mode.
+- Fix: omit `mode_id` to write the Base mode; Light mode stays untouched.
+  Read back both modes afterwards.
+- Status: workaround
+- Found by: claude
+
+### 2026-11-11 · Semantic colours alias shared tint primitives
+- Area: designer
+- Scope: template-candidate
+- Symptom: Raising muted-text contrast by editing White 40 would also have
+  changed Form/Placeholder, and editing White 64 would make its name lie.
+- Cause: Text/Muted and Text/Secondary alias steps in the White Tint scale
+  that other variables share.
+- Fix: added White 55 and White 72 primitives and repointed only the Base
+  mode of the two semantic variables (launch QA K1).
+- Status: fixed (Webflow, unpublished at time of writing)
+- Found by: claude
+
 ### 2026-11-10 · Every Button opened in a new tab, internal links included
 - Area: designer
 - Scope: template-candidate
@@ -298,7 +323,8 @@ they are not rediscovered. Status refers to the template.
 - Fix: reformd e9f81ab and regenx a66d116 removed the static link
   independently and create it from script only in dev mode. Trade-off: the
   canvas then shows staging CSS only.
-- Status: open in template
+- Status: fixed in wf-template 0.24 (no static dev link; Embed split into
+  2a/2b). This repo ported that loader on 2026-11-11 (launch QA K10).
 - Found by: human
 
 ### 2026-10-02 · VER lives in two snippets and a placeholder 404s at launch
