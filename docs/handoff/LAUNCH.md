@@ -92,8 +92,8 @@ deployed bundle), with `webflow-build.config.json` covering 12 pages: `/`,
 - [x] [Claude checks] Canonicals — already `https://www.reformdla.com/…`
   on every page. Re-check once the domain is attached.
 - [x] [Claude checks] Utility pages — `/design/style-guide` and
-  `/design/video-library` are published but `noindex, nofollow`. Decide
-  whether to keep them reachable on the live domain (K11).
+  `/design/video-library` are published but `noindex, nofollow`; kept
+  reachable by decision (K11).
 - [x] [Claude checks] Tracking — 2026-11-11 Claude. `pnpm wf:tracking`: no
   analytics tags, no cookie banner, nothing tracks on first visit.
 - [ ] [Person] Decide on GA4 / Meta pixel (the presale todo lists "ad
@@ -113,8 +113,8 @@ deployed bundle), with `webflow-build.config.json` covering 12 pages: `/`,
 | K8 | Two elements with `data-join="modal"` on /presale; only the second is used. | Designer: remove the stray one | after launch | Claude |
 | K9 | **Fixed 2026-11-11** (published; `wf:seo` 0 findings). /presale OG now copies its SEO title and description and uses the site OG image (`reformd-og-1200x630.jpg`). /terms-of-service has its own description (website purchases, billing, accounts, third-party booking, acceptable use); /terms-and-conditions keeps the studio one. **New:** the Terms of Service body still says "Email: [Insert official customer support email]" (K13). | Page settings | before launch | Claude ✓ |
 | K10 | **Fixed and verified 2026-11-11** (ea62f3c; head and footer re-pasted and published). Staging now requests only GitHub Pages `styles.css` and `index.js` — no localhost request, `window.WFC` set, console clean. Ported the wf-template 0.24.1 loader (no static localhost `<link>`; Embed split into 2a link + 2b script; config renamed `BV` → `WFC`; one `RELEASE` string in head code, `null` until the launch tag). The two Embeds in **Global Components** are updated in Webflow. **Site head code and footer code must be replaced with pieces 1 and 3 of `loader.html` before the next publish** — the old footer reads `window.BV`, which no longer exists, and would fall back to the old 0.1.0 bundle. | Site settings › Custom code | before launch | Person (paste) |
-| K11 | Style guide and video library pages are public on the live domain (noindex). | Decide: keep, password-protect or set to draft | before launch | Person |
-| K12 | Presale content still placeholder: "$TBC" prices, opening date/countdown (2027-01-15 09:00 PT), tier caps and terms (progress todo t-ce021777). | /presale | before launch | client |
+| K11 | **Closed 2026-11-11 — decision: reachable, not indexed.** `/design/style-guide` and `/design/video-library` stay published (HTTP 200) with `noindex, nofollow`, and no public page links to them. After launch, check they're absent from the live sitemap.xml. | — | closed | Person ✓ |
+| K12 | **Closed 2026-11-11 — presale content checked and confirmed** (prices, opening date/countdown, tier caps, terms). | /presale | closed | Person ✓ |
 | K13 | Terms of Service body: "Email: [Insert official customer support email]" placeholder (probably info@reformdla.com). | /terms-of-service content | before launch | client to confirm |
 
 ## Launch day
