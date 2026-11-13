@@ -145,8 +145,13 @@ deployed bundle), with `webflow-build.config.json` covering 12 pages: `/`,
 
 - [ ] [Person] Content freeze; go-live approval and date from the client.
 - [ ] [Person] DNS: lower the TTL a day ahead; keep MX, SPF and DKIM.
-- [ ] [Claude] With an explicit OK: release (README › Release: tag, then set
-  `RELEASE` in the head snippet — one place), publish to www.reformdla.com.
+- [x] [Claude] Release `v1.0.0` cut 2026-11-13 (76cb975, dist untracked
+  dd9bf07). jsDelivr `@1.0.0/dist/index.js` and `styles.css` verified
+  byte-identical to the build.
+- [ ] [Person] Site head code: set `var RELEASE = "1.0.0";` (loader.html
+  piece 1, line 56).
+- [ ] [Person] Move reformdla.com + www from the coming-soon site
+  (`6a0dbc27…`) to the Reformd site; www as default; publish to the domain.
 - [ ] [Claude checks] SSL; apex and http redirect to `https://www.reformdla.com`.
 - [ ] [Claude] robots.txt allows indexing (staging's `Disallow: /` is the
   webflow.io default); remove any staging password.
