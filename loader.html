@@ -44,10 +44,16 @@ published.
    we want here — no scroll lock, no preloader while designing.
 ------------------------------------------------------------ -->
 <meta name="theme-color" content="#000000" />
+<!-- Reformd: Webflow writes twitter:card and twitter:title but no
+     twitter:image. Every page shares this OG image, so one site-wide line
+     covers X/Twitter cards. A page given its own OG image later needs its
+     own twitter:image in that page's head code. -->
+<meta name="twitter:image" content="https://cdn.prod.website-files.com/6aa30843ef516b660e7d8770/6ac7be7a8f460df3a152d617_reformd-og-1200x630.jpg" />
+<meta name="twitter:image:alt" content="Rows of Lagree EVO PRO machines lit in purple and teal inside the Reformd studio in Calabasas" />
 
 <script>
   (function () {
-    var RELEASE = null; // the release tag, e.g. "1.0.0" — the only version string
+    var RELEASE = "1.0.0"; // the release tag (git tag v1.0.0) — the only version string
     var OWNER = "brandvm"; // the GitHub org or user that owns this repo
     var SITE = "reformdd"; // this repo's name
     var STAG = "https://" + OWNER + ".github.io/" + SITE + "/";

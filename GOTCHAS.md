@@ -23,6 +23,18 @@ repos to improve `brandvm/wf-template`.
 
 ## This project
 
+### 2026-11-13 · `query_elements` text filter misses Heading text
+- Area: mcp
+- Scope: template-candidate
+- Symptom: `query_elements` with type Heading and a text filter ("Lagree
+  Packs") returned nothing; `return_parent` did not help.
+- Cause: a Heading's text lives in a child String element, so the text
+  filter never matches the Heading itself.
+- Fix: list every Heading on the page (type filter only) and read each
+  one's text, or filter by text without a type and take the parent.
+- Status: workaround
+- Found by: claude
+
 ### 2026-11-13 · Stacked feature tabs blurred the open panel on mobile Safari
 - Area: css
 - Scope: project

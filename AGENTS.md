@@ -19,8 +19,8 @@ site. Webflow owns markup, layout, components, and CMS content.
 - Staging bundles: `https://brandvm.github.io/reformdd/`
 - Production bundles: `https://cdn.jsdelivr.net/gh/brandvm/reformdd@<RELEASE>/dist/`
 - Production domain: not attached yet
-- Production release: none pinned yet (`RELEASE = null` in the head
-  snippet of `loader.html`; tag `v0.1.0` predates launch work)
+- Production release: `v1.0.0` (`RELEASE = "1.0.0"` in the head snippet
+  of `loader.html`)
 
 ## Who owns what
 

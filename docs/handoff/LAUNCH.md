@@ -117,6 +117,30 @@ deployed bundle), with `webflow-build.config.json` covering 12 pages: `/`,
 | K12 | **Closed 2026-11-11 — presale content checked and confirmed** (prices, opening date/countdown, tier caps, terms). | /presale | closed | Person ✓ |
 | K13 | Terms of Service body: "Email: [Insert official customer support email]" placeholder (probably info@reformdla.com). | /terms-of-service content | before launch | client to confirm |
 
+### Launch-day SEO pass (2026-11-13)
+- [x] [Claude checks] All 12 public pages: title, unique description,
+  OG title/description/image, `summary_large_image`, canonical to
+  `https://www.reformdla.com/…`, indexable; one H1, no skipped levels;
+  schema on every page. `/design/*` are noindex by decision (K11).
+- [x] [Claude] Fixed in Webflow: /terms-of-service title gets "| Reformd";
+  /presale WebPage + BreadcrumbList schema; /pricing description cut to
+  137 chars; /pricing hero H1 "Shake. Sweat. Sore" → "Memberships &
+  Pricing".
+- [x] [Person] Pasted `twitter:image` (+ alt) into site head code and
+  `og:url` into /presale page head code; published. Verified 2026-11-13:
+  every page has twitter:image, og:url, schema; `wf:seo` 0 findings.
+- [x] [Claude] /terms-of-service schema still described
+  /terms-and-conditions (page was duplicated); URLs, names and description
+  corrected in Webflow.
+- [x] [Claude] /pricing: "Lagree Memberships" and "Lagree Packs" were h3
+  under "Founding Memberships"; all four tab groups are now h2 (classes
+  unchanged, so they still look as designed).
+- [x] [Person] /terms-of-service `og:url` corrected; published. Final
+  check 2026-11-13: `wf:seo` 0 findings, /pricing outline H1 + seven H2s,
+  `wf:links` only the known `#` toggles (K7).
+- [ ] [Person] Confirm hours: schema says Mon–Fri 5am–10pm, Sat–Sun
+  7am–7pm; /contact shows only "5am-10pm".
+
 ## Launch day
 
 - [ ] [Person] Content freeze; go-live approval and date from the client.
