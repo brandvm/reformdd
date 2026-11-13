@@ -90,8 +90,13 @@ export function initAnchorScroll(lenis?: Lenis) {
     event.preventDefault();
     if (location.hash !== link.hash) history.pushState(null, '', link.hash);
     scrollToTarget(target, lenis, !reduce);
-    // Move keyboard focus with the scroll, as Webflow's handler did.
-    if (!target.matches('a, button, input, select, textarea, [tabindex]')) target.setAttribute('tabindex', '-1');
+    // Move keyboard focus with the scroll, as Webflow's handler did, so the
+    // next Tab continues from the section. A section made focusable here is
+    // marked so §07 hides its ring: it is a landing point, not a control.
+    if (!target.matches('a, button, input, select, textarea, [tabindex]')) {
+      target.setAttribute('tabindex', '-1');
+      target.setAttribute('data-anchor-focus', '');
+    }
     target.focus({ preventScroll: true });
   });
 

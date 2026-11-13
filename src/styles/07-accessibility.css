@@ -15,6 +15,15 @@
   outline-offset: 2px;
 }
 
+/* repo-css: js-state — anchor-scroll.ts focuses the section an anchor link
+   lands on (tabindex="-1", data-anchor-focus) so the next Tab starts there.
+   The section is not a control, so no ring: Safari and Chrome after keyboard
+   use otherwise outline the whole section. */
+[data-anchor-focus]:focus,
+[data-anchor-focus]:focus-visible {
+  outline: none;
+}
+
 /* Accordion rows draw their ring inside the row, since a 2px offset would
    collide with the hairline of the row above. */
 [data-acc="trigger"]:focus-visible {

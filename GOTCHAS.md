@@ -23,6 +23,21 @@ repos to improve `brandvm/wf-template`.
 
 ## This project
 
+### 2026-11-13 · Anchor links drew a focus ring around the target section
+- Area: js
+- Scope: template-candidate
+- Symptom: After clicking an anchor link (e.g. the /pricing tabs), the whole
+  section it scrolled to showed a 2px outline in Safari, and in Chrome after
+  keyboard use.
+- Cause: `anchor-scroll.ts` gives the target `tabindex="-1"` and focuses it
+  so the next Tab continues from there. Safari treats that programmatic
+  focus as `:focus-visible`, so §07's `:focus-visible` ring applied.
+- Fix: the module marks targets it made focusable with `data-anchor-focus`,
+  and §07 removes the outline on `[data-anchor-focus]` only. Focus still
+  moves; real controls keep their ring. Checked in WebKit and Chromium.
+- Status: fixed (this commit)
+- Found by: human
+
 ### 2026-11-11 · `update_color_variable` with `mode_id: "base"` fails
 - Area: mcp
 - Scope: template-candidate
