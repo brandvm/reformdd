@@ -23,6 +23,19 @@ repos to improve `brandvm/wf-template`.
 
 ## This project
 
+### 2026-11-13 · Stacked feature tabs blurred the open panel on mobile Safari
+- Area: css
+- Scope: project
+- Symptom: On /sweat at phone width, "Shake, Sweat, Sore" showed the
+  Lagree Studio and EVO Pro copy blurred in Safari; Chromotherapy (the last
+  panel) was sharp.
+- Cause: closed panels carry `backdrop-filter: blur(4px)` for the desktop
+  sliver look. Below 768px the module stacks all three panels in one box,
+  so the closed ones sit on top of the open one and blur it through.
+- Fix: the blur applies only from 768px up (the module's STACK breakpoint).
+- Status: fixed (this commit)
+- Found by: human
+
 ### 2026-11-13 · Anchor links drew a focus ring around the target section
 - Area: js
 - Scope: template-candidate

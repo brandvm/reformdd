@@ -10,10 +10,18 @@
 
       Not filter: blur() — that would blur the panel's own label with it.
       Not on the open panel either: a backdrop-filter over the full row is a
-      viewport-sized repaint on every frame of the width tween. */
-[data-tabs="panel"]:not(.is-active) {
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
+      viewport-sized repaint on every frame of the width tween.
+
+      Row layout only (768px and up, the module's STACK breakpoint). Below
+      it the three panels stack in one box, so the two closed ones sit on
+      top of the open one and Safari blurred its copy through them; there
+      the rails are a tab bar and there is no sliver to blur.
+      repo-css: designer-cant — backdrop-filter. */
+@media (min-width: 768px) {
+  [data-tabs="panel"]:not(.is-active) {
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+  }
 }
 
 /* 2. The no-JS resting state. The first panel ships carrying is-active, so
