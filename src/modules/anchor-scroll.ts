@@ -48,9 +48,22 @@ function offsetFor(target: HTMLElement): number {
   return Math.max(margin, bar ? bar + GAP : 0);
 }
 
+/* Anchor jumps glide rather than snap. Lenis's default for scrollTo is the
+   same lerp damping as wheel scrolling (0.2, ~0.3s), which read as a jump
+   cut on long pages. A fixed duration that grows with distance keeps short
+   hops brisk and long ones calm: 1s plus 0.1s per 1000px, capped at 1.8s,
+   on an ease-in-out cubic so it starts and lands softly. Wheel scrolling is
+   untouched (smooth-scroll.ts). */
+const MIN_S = 1.0;
+const MAX_S = 1.8;
+const PER_1000PX_S = 0.1;
+const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
 function scrollToTarget(target: HTMLElement, lenis: Lenis | undefined, smooth: boolean) {
   const y = target.getBoundingClientRect().top + scrollY - offsetFor(target);
-  if (lenis) lenis.scrollTo(y, { immediate: !smooth });
+  const distance = Math.abs(y - scrollY);
+  const duration = Math.min(MAX_S, MIN_S + (distance / 1000) * PER_1000PX_S);
+  if (lenis) lenis.scrollTo(y, smooth ? { duration, easing: easeInOutCubic } : { immediate: true });
   else window.scrollTo({ top: y, behavior: smooth ? 'smooth' : 'auto' });
 }
 
