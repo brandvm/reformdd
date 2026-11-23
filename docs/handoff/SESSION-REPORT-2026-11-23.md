@@ -1,10 +1,9 @@
 # Session report: 2026-11-23
 
-The Claude Code sessions listed below were archived on 2026-11-23 to keep the Claude app responsive. This file records where each one left off, so a new session can pick up the work.
+The Claude Code sessions listed below were archived and then deleted on 2026-11-23 to keep the Claude app responsive. This file records where each one left off, so a new session can pick up the work.
 
 Read this with `HANDOFF.md` (the project brief and its Status section). If something here conflicts with `HANDOFF.md`, `HANDOFF.md` and the git history are more current.
 
-To reopen a session, go to the Claude app's sidebar → Archived, or use the session link while the app is installed.
 
 ## Open items
 
@@ -30,7 +29,7 @@ Branches not merged into the default branch:
 ### Pricing content update via Webflow MCP
 
 - **Active:** 2026-11-06 → 2026-11-18 14:32
-- **Session:** [local_8c496675-0ee2-42fd-8b6d-3f4093859b8e](claude://claude.ai/epitaxy/local_8c496675-0ee2-42fd-8b6d-3f4093859b8e) (archived)
+- **Session:** `local_8c496675-0ee2-42fd-8b6d-3f4093859b8e` (deleted 2026-11-23)
 - **Started with:** "https://app.arketa.co/reformdla/pricing/buy-page/reformd-pricing?_gl=1*ztxq7j*_gcl_au*ODI5NjQ2MDIuMTc4Njk3MzQyMC4xMjUyOTAyMzI2LjE3OTMzMjIyMDUuMTc5MzMyMjIwNS4xMTcwMTIyNzU5LjE3OTMzMDIyMzguMTc5MzMyMjIwNQ..*_ga*NDcyOTEwODIxLjE3MjQ4NjgwNDA.*_ga_M2ZSW5XNW8*czE3OTM0MDA2MTYkbzY4JGcxJHQxNzkzNDAzMDQ3JGo2MCRsM…"
 - **Where it ended:** /contact now uses the Arketa "Send us a note" form in Webflow.
 - **Recent progress:**
@@ -41,7 +40,7 @@ Branches not merged into the default branch:
 ### btw: for video used in homepage hero in webflow can you add opti...
 
 - **Active:** 2026-11-06 → 2026-11-06 17:52
-- **Session:** [local_6704d0ff-9aaa-4a49-9658-02671d235d61](claude://claude.ai/epitaxy/local_6704d0ff-9aaa-4a49-9658-02671d235d61) (archived)
+- **Session:** `local_6704d0ff-9aaa-4a49-9658-02671d235d61` (deleted 2026-11-23)
 - **Started with:** "https://app.arketa.co/reformdla/pricing/buy-page/reformd-pricing?_gl=1*ztxq7j*_gcl_au*ODI5NjQ2MDIuMTc4Njk3MzQyMC4xMjUyOTAyMzI2LjE3OTMzMjIyMDUuMTc5MzMyMjIwNS4xMTcwMTIyNzU5LjE3OTMzMDIyMzguMTc5MzMyMjIwNQ..*_ga*NDcyOTEwODIxLjE3MjQ4NjgwNDA.*_ga_M2ZSW5XNW8*czE3OTM0MDA2MTYkbzY4JGcxJHQxNzkzNDAzMDQ3JGo2MCRsM…"
 - **Where it ended:** The navbar load fix is committed (61e78cc), pushed and live on staging.
 - **Recent progress:**
