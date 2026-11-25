@@ -18,6 +18,7 @@ import { initFaq } from './modules/faq';
 import { initPricing } from './modules/pricing';
 import { initPricingTabs } from './modules/pricing-tabs';
 import { initCountdown } from './modules/countdown';
+import { initGallery } from './modules/gallery';
 import { initYear } from './modules/year';
 
 // Release the pre-paint scroll lock set by the head bootstrap (loader.html).
@@ -121,6 +122,11 @@ run('pricing tabs', () => initPricingTabs());
 // /presale opening countdown. Counts to the date in data-countdown; no-ops on
 // any page without one.
 run('countdown', () => initCountdown());
+
+// /presale studio gallery: endless row that autoplays, follows the scroll
+// direction and can be dragged or flung. No-ops on any page without a
+// data-gallery root.
+run('gallery', () => initGallery());
 
 // Footer copyright: keeps the year in any [data-year] element current.
 run('year', () => initYear());

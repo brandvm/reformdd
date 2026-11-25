@@ -23,6 +23,19 @@ repos to improve `brandvm/wf-template`.
 
 ## This project
 
+### 2026-11-25 · `element_snapshot_tool` fails with `{"status":false}`
+- Area: mcp
+- Scope: template-candidate
+- Symptom: Snapshotting the new /presale gallery section returned
+  `Element snapshot failed with status: false` and no image, although the
+  element existed and every data tool could read it.
+- Cause: the snapshot is a Designer tool; it appears to need the Designer
+  open on that page. The data tools work without it.
+- Fix: verify layout on a local test page (Playwright against `dist/`) or
+  on staging after publishing, instead of relying on the snapshot.
+- Status: workaround
+- Found by: claude
+
 ### 2026-11-13 · `query_elements` text filter misses Heading text
 - Area: mcp
 - Scope: template-candidate
@@ -121,7 +134,10 @@ repos to improve `brandvm/wf-template`.
   load the repo server: `claude -p '<task>' --allowedTools
   "mcp__webflow-reformdd__data_sites_tool,…"`, starting with a list_sites
   check that returns only this site. Used for the Join Us → /pricing change.
-- Status: workaround
+- Status: workaround. On 2026-11-25 a desktop session opened in the repo
+  folder itself did load `webflow-reformdd` (one started in the parent
+  folder did not); its first call returned 401 until it was re-authorised
+  through `/mcp`.
 - Found by: claude
 
 ### 2026-11-05 · A failed element build still leaves its root element

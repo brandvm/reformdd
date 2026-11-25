@@ -1,0 +1,23 @@
+/* Gallery — the endless image row on /presale (src/modules/gallery.ts).
+   Layout, item sizes, radius and gap are Webflow classes (S | Gallery,
+   Gallery Track, Gallery Item, is-wide, Gallery Img). Only the states the
+   module sets live here, so the canvas — which never runs the module —
+   shows a plain static row.
+
+   repo-css: js-state — [data-gallery-state] is set by the module once it
+   has cloned the row. touch-action keeps vertical swipes scrolling the page
+   while horizontal ones drag the row (designer-cant: touch-action). */
+[data-gallery-state] {
+  cursor: grab;
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+[data-gallery-state] [data-gallery-track] {
+  will-change: transform;
+}
+
+[data-gallery-state="dragging"] {
+  cursor: grabbing;
+}
