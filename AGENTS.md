@@ -18,7 +18,8 @@ site. Webflow owns markup, layout, components, and CMS content.
 - Staging site: `https://reformdd.webflow.io`
 - Staging bundles: `https://brandvm.github.io/reformdd/`
 - Production bundles: `https://cdn.jsdelivr.net/gh/brandvm/reformdd@<RELEASE>/dist/`
-- Production domain: not attached yet
+- Production domain: `https://www.reformdla.com` (apex redirects to
+  www); checked live on release v1.1.0 on 2026-11-25
 - Production release: `v1.1.0` (`RELEASE = "1.1.0"` in the head snippet
   of `loader.html`)
 

@@ -36,7 +36,10 @@ repos to improve `brandvm/wf-template`.
   end of §03, tagged `override-webflow` with the user's approval. Remove it
   when the badge is switched off in Site settings › General or the custom
   domain is attached.
-- Status: open (temporary override in place)
+- Status: open (temporary override in place). Since the domain went live
+  (checked 2026-11-25) the badge is not added on www.reformdla.com at all,
+  so the rule only affects reformdd.webflow.io; drop it whenever staging's
+  badge no longer matters.
 - Found by: human
 
 ### 2026-11-25 · Staging deploy failed: "No artifacts named github-pages"

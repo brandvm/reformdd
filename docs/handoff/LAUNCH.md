@@ -152,13 +152,21 @@ deployed bundle), with `webflow-build.config.json` covering 12 pages: `/`,
   7b5f3f6): /presale gallery, eased anchor scroll, temporary badge hide.
   jsDelivr `@1.1.0/dist/index.js`, `styles.css` and `version.json`
   verified byte-identical to the build.
-- [ ] [Person] Site head code: set `var RELEASE = "1.1.0";` (loader.html
-  piece 1, line 56) and publish.
-- [ ] [Person] Move reformdla.com + www from the coming-soon site
+- [x] [Person] Site head code: set `var RELEASE = "1.1.0";` (loader.html
+  piece 1, line 56) and publish. Checked live 2026-11-25: both bundles load
+  from `@1.1.0`. loader.html synced to the installed text that day (same
+  code, reformatted: single quotes, trailing comma).
+- [x] [Person] Move reformdla.com + www from the coming-soon site
   (`6a0dbc27…`) to the Reformd site; www as default; publish to the domain.
-- [ ] [Claude checks] SSL; apex and http redirect to `https://www.reformdla.com`.
-- [ ] [Claude] robots.txt allows indexing (staging's `Disallow: /` is the
-  webflow.io default); remove any staging password.
+  Live 2026-11-25: `data-wf-site` is the Reformd site on www.reformdla.com.
+- [x] [Claude checks] SSL; apex and http redirect to `https://www.reformdla.com`.
+  2026-11-25: certificate for www.reformdla.com valid to 2027-02-19; apex
+  301 → www; `http://reformdla.com` 301 → `https://reformdla.com` → www
+  (two hops); `http://www` 301 → https. All 12 main pages return 200; no
+  console errors or failed requests on /presale at 1440 and 390.
+- [x] [Claude] robots.txt allows indexing (staging's `Disallow: /` is the
+  webflow.io default); remove any staging password. 2026-11-25: live
+  robots.txt holds only the Sitemap line; no `noindex` meta or header.
 - [ ] [Claude] `pnpm wf:baseline save --live` on every page; commit.
 - [ ] [Claude] 301 redirects from the old site, if any; check the top URLs.
 - [ ] [Person] Submit sitemap.xml in Search Console.
