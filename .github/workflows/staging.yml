@@ -13,12 +13,14 @@ concurrency:
   group: github-pages
   cancel-in-progress: false
 
+# Two jobs, not one. With upload and deploy in the same job, deploy-pages
+# asked for the artifact a fraction of a second after it was finalized and
+# GitHub sometimes did not list it yet ("No artifacts named github-pages"),
+# failing the run until it was re-run (GOTCHAS 2026-11-25). The job boundary
+# gives the artifact time to register; it is also GitHub's own Pages layout.
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -32,5 +34,13 @@ jobs:
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with: { path: dist }
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - id: deployment
         uses: actions/deploy-pages@v4

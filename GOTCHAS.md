@@ -23,6 +23,21 @@ repos to improve `brandvm/wf-template`.
 
 ## This project
 
+### 2026-11-25 · Staging deploy failed: "No artifacts named github-pages"
+- Area: ci
+- Scope: template-candidate
+- Symptom: Three staging runs in a row (357f4ba, f9c8bf8) built and
+  uploaded `dist/`, then `deploy-pages` failed with "Found 0 artifact(s)".
+  A plain re-run succeeded each time. Not an Actions minutes problem: it
+  happened under both pushers, and the jobs ran.
+- Cause: upload and deploy were steps in one job. `deploy-pages` listed
+  the run's artifacts ~0.3s after the upload was finalized, before GitHub
+  returned it.
+- Fix: split `staging.yml` into a `build` job and a `deploy` job
+  (`needs: build`), GitHub's own Pages layout.
+- Status: fixed (this commit)
+- Found by: claude
+
 ### 2026-11-25 · `element_snapshot_tool` fails with `{"status":false}`
 - Area: mcp
 - Scope: template-candidate
