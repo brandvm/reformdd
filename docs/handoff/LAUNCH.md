@@ -141,6 +141,15 @@ deployed bundle), with `webflow-build.config.json` covering 12 pages: `/`,
 - [ ] [Person] Confirm hours: schema says Mon–Fri 5am–10pm, Sat–Sun
   7am–7pm; /contact shows only "5am-10pm".
 
+- [x] [Claude checks] Pre-launch speed, 2026-11-13, staging, Lighthouse 12
+  (median of 5 mobile runs with `WF_PERF_CHROME_FLAGS=--disable-features=
+  HappyEyeballsV3,AsyncDns`; desktop median of 3): **every page 96–98 on
+  mobile and 97–100 on desktop.** Without the flags this machine's network
+  made mobile scores swing 81–97 on an unchanged page
+  (lessons › loader-release-ci). TBT 0 ms, CLS ≤ 0.03 everywhere. Re-check
+  on pagespeed.web.dev once the domain is live (production loads the CSS
+  from jsDelivr in `<head>`, not GitHub Pages).
+
 ## Launch day
 
 - [ ] [Person] Content freeze; go-live approval and date from the client.
