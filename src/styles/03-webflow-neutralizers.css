@@ -90,3 +90,14 @@
 [data-embed="contents"] {
   display: contents;
 }
+
+/* TEMPORARY — hides the "Made in Webflow" badge that webflow.js injects on
+   *.webflow.io. Requested by the user on 2026-11-25 as a stopgap; remove
+   it once the badge is turned off in Site settings › General (needs a paid
+   site plan) or the custom domain is attached. webflow.css gives the badge
+   display: inline-block !important, so this needs !important too and the
+   extra html body specificity to win regardless of source order.
+   repo-css: override-webflow — approved by the user, logged in GOTCHAS. */
+html body .w-webflow-badge {
+  display: none !important;
+}

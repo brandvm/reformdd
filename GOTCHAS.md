@@ -23,6 +23,22 @@ repos to improve `brandvm/wf-template`.
 
 ## This project
 
+### 2026-11-25 · "Made in Webflow" badge hidden from repo CSS (temporary)
+- Area: css
+- Scope: project
+- Symptom: The user wanted the badge gone from reformdd.webflow.io for a
+  while, before the site plan or domain is sorted.
+- Cause: webflow.js appends `a.w-webflow-badge` on *.webflow.io, and
+  webflow.css styles it with `display: inline-block !important`, so only an
+  `!important` rule can hide it. It is not inline-styled (except while in
+  fullscreen), so a stylesheet rule is enough.
+- Fix: `html body .w-webflow-badge { display: none !important; }` at the
+  end of §03, tagged `override-webflow` with the user's approval. Remove it
+  when the badge is switched off in Site settings › General or the custom
+  domain is attached.
+- Status: open (temporary override in place)
+- Found by: human
+
 ### 2026-11-25 · Staging deploy failed: "No artifacts named github-pages"
 - Area: ci
 - Scope: template-candidate
