@@ -9,9 +9,9 @@
 // - Autoplays in a loop. The items are cloned until the row is at least one
 //   viewport wider than one set, and the row wraps by exactly one set width,
 //   so the seam is never visible.
-// - Follows the page scroll: scrolling down runs it leftwards, scrolling up
-//   rightwards, and each scroll adds a push that eases back to the autoplay
-//   speed, so it reads as inertia rather than a jump.
+// - Follows the page scroll direction: scrolling down runs it leftwards,
+//   scrolling up rightwards. Only the direction changes, never the speed;
+//   the turn eases over EASE_BACK rather than snapping.
 // - Draggable with mouse, pen or touch. The row follows the pointer 1:1 and
 //   on release keeps the fling velocity, decaying back to autoplay in the
 //   direction it was flung. Vertical swipes still scroll the page
@@ -19,15 +19,14 @@
 //
 // The Designer never runs this, so the canvas shows the static row clipped
 // by the section — the originals only, no clones. Under
-// prefers-reduced-motion the autoplay and the scroll push are off; dragging
-// still works, with no glide after release.
+// prefers-reduced-motion the autoplay and the scroll direction are off;
+// dragging still works, with no glide after release.
 
-/** Time constant of the return to autoplay speed, in seconds. */
+/** Time constant of the return to autoplay speed (after a fling or a
+ *  direction change), in seconds. */
 const EASE_BACK = 0.6;
-/** How much one pixel of page scroll pushes the row, in px/s. */
-const SCROLL_PUSH = 4;
-/** Ceiling on the row's speed, in px/s, so a hard fling or a jump-to-anchor
- *  scroll cannot spin it into a blur. */
+/** Ceiling on the row's speed, in px/s, so a hard fling cannot spin it
+ *  into a blur. */
 const MAX_SPEED = 3000;
 /** Pointer travel, in px, before a press counts as a drag. Below it a tap
  *  is left alone. */
@@ -167,7 +166,6 @@ function setUp(root: HTMLElement, track: HTMLElement): void {
         lastScroll = window.scrollY;
         if (!dy || dragging || !visible) return;
         dir = dy > 0 ? -1 : 1;
-        velocity = clamp(velocity + dir * Math.abs(dy) * SCROLL_PUSH);
       },
       { passive: true },
     );
