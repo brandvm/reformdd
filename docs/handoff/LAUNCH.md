@@ -149,6 +149,18 @@ deployed bundle), with `webflow-build.config.json` covering 12 pages: `/`,
   (lessons › loader-release-ci). TBT 0 ms, CLS ≤ 0.03 everywhere. Re-check
   on pagespeed.web.dev once the domain is live (production loads the CSS
   from jsDelivr in `<head>`, not GitHub Pages).
+- [x] [Claude checks] Live speed, 2026-11-25, www.reformdla.com on v1.1.0,
+  same method (Lighthouse 12 locally, 5 mobile / 3 desktop runs, same
+  flags; the keyless PageSpeed Insights API was out of daily quota).
+  **Desktop 96–100, mobile 89–97.** Desktop matches staging. Mobile is
+  2–7 points under staging on most pages: FCP ~250–400 ms later everywhere,
+  even on pages that now transfer less. That matches the one structural
+  difference: production's stylesheet is a render-blocking request to
+  cdn.jsdelivr.net written from the head code, where staging's comes from
+  the body Embed. Lowest: / 90 (Speed Index 5.6 s; transfer 10.6 MB, most
+  of it the Arketa booking widget, which staging loads too) and /faqs 89
+  (TBT 62 ms). TBT 0 elsewhere, CLS ≤ 0.03. Re-check on pagespeed.web.dev
+  for Google's own numbers and, once there is traffic, field data.
 
 ## Launch day
 
